@@ -1,0 +1,25 @@
+{
+  "name": "ayoubot",
+  "version": "5.0.0",
+  "description": "A discord bot for use on Ayou Discord server only.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Haneol/ayoubot.git"
+  },
+  "author": "haneoljc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Haneol/ayoubot/issues"
+  },
+  "homepage": "https://github.com/Haneol/ayoubot#readme",
+  "dependencies": {
+    "discord.js": "^14.15.2"
+  },
+  "devDependencies": {
+    "eslint": "^9.3.0"
+  }
+}
