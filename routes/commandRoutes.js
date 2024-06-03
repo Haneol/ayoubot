@@ -1,4 +1,5 @@
 const helpController = require("../controllers/helpController");
+const adminController = require("../controllers/adminController");
 
 // Abstract Class
 class CommandRoutes {
@@ -24,6 +25,10 @@ class CommandRoutes {
   // Controller Route
   _findRoutes(msg, name) {
     switch (name) {
+      case "admin_help":
+        console.log("어드민 명령어");
+        adminController.help(msg);
+        break;
       case "help":
         console.log("명령어 : 도움말");
         helpController.help(msg);

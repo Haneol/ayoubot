@@ -1,8 +1,7 @@
 const { Client, Events, GatewayIntentBits } = require("discord.js");
 const { token } = require("./config.json");
 const MsgCommandRoutes = require("./routes/msgCommandRoutes");
-const sequelize = require("./config/database");
-const User = require("./models/user");
+const { sequelize, initializeDatabase } = require("./config/database");
 
 const client = new Client({
   intents: [
@@ -14,7 +13,6 @@ const client = new Client({
 });
 
 client.once(Events.ClientReady, async (readyClient) => {
-  console.log(`Ready! Logged in as ${readyClient.user.tag}`);
   client.user.setPresence({
     activities: [{ name: "그럴 수 있지..." }],
     status: "online",
@@ -23,8 +21,10 @@ client.once(Events.ClientReady, async (readyClient) => {
   try {
     await sequelize.authenticate();
     console.log("Database connection has been established successfully.");
+    await initializeDatabase();
     await sequelize.sync(); // Model & Database Sync
     console.log("Database synced");
+    console.log(`Ready! Logged in as ${readyClient.user.tag}`);
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }
