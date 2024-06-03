@@ -1,9 +1,11 @@
 const { Client, Events, GatewayIntentBits } = require("discord.js");
 const { token } = require("./config.json");
+const cron = require("node-cron");
 const MsgCommandRoutes = require("./routes/msgCommandRoutes");
 const { sequelize, initializeDatabase } = require("./config/database");
 const ButtonInteractionEvent = require("./events/buttonInteractionEvent");
 const ModalInteractionEvent = require("./events/modalInteractionEvent");
+const todayController = require("./controllers/todayController");
 
 const client = new Client({
   intents: [
@@ -30,6 +32,17 @@ client.once(Events.ClientReady, async (readyClient) => {
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }
+
+  cron.schedule(
+    "0 10 * * *",
+    () => {
+      todayController.run(client);
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Seoul",
+    }
+  );
 });
 
 const msgCommandRoutes = new MsgCommandRoutes();
