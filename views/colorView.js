@@ -52,7 +52,7 @@ exports.sendCurrentColorEmbededMsg = async (msg, color) => {
         },
         {
           name: "색 입력",
-          value: "'빨간색'과 같이 입력. 또는 '저녁노을'과 같이 추상적으로 입력",
+          value: "'빨간색'과 같이 입력. 또는 '여름바다'과 같이 추상적으로 입력",
         }
       )
       .setThumbnail("attachment://color.png");
@@ -84,7 +84,7 @@ exports.sendCurrentColorEmbededMsg = async (msg, color) => {
         },
         {
           name: "색 입력",
-          value: "'빨간색'과 같이 입력. 또는 '저녁노을'과 같이 추상적으로 입력",
+          value: "'빨간색'과 같이 입력. 또는 '여름바다'과 같이 추상적으로 입력",
         }
       );
 
