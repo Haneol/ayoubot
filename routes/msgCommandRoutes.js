@@ -1,3 +1,4 @@
+const fs = require("fs");
 const CommandRoutes = require("./commandRoutes");
 const { askClaude } = require("../utils/claudeUtil");
 const { authenticateUser } = require("../middlewares/userMiddleware");
@@ -8,14 +9,20 @@ class MsgCommandRoutes extends CommandRoutes {
   async routes(msg) {
     if (msg.author.bot) return;
 
-    await authenticateUser(msg, async () => {
-      const user = await userRepository.getUserById(msg.ayouUser);
-      if (msg.content.startsWith("//") && user.Role.roleName === "ADMIN") {
-        const prompt = msg.content.slice(2).trim().replace(/\s/g, "");
-        if (prompt == "help") {
-          this._findRoutes(msg, "admin_help");
+    if (msg.content.startsWith("//")) {
+      // userMiddleware 사용
+      await authenticateUser(msg, async () => {
+        const user = await userRepository.getUserById(msg.ayouUser);
+        if (user.Role.roleName === "ADMIN") {
+          const prompt = msg.content.slice(2).trim().replace(/\s/g, "");
+          if (prompt == "help") {
+            this._findRoutes(msg, "admin_help");
+          }
         }
-      } else if (msg.content.startsWith("믫 ")) {
+      });
+    } else if (msg.content.startsWith("믫 ")) {
+      // userMiddleware 사용
+      await authenticateUser(msg, async () => {
         const prompt = msg.content.slice(2).trim();
         const cmd = prompt.replace(/\s/g, "");
 
@@ -47,14 +54,31 @@ class MsgCommandRoutes extends CommandRoutes {
           this._findRoutes(msg, "create_private_channel");
         } else if (cmd == "모각공") {
           this._findRoutes(msg, "study_channel");
-        } else if (cmd == "색변경") {
+        } else if (
+          cmd == "색변경" ||
+          cmd == "색" ||
+          cmd == "색상" ||
+          cmd == "색깔" ||
+          cmd == "색깔변경" ||
+          cmd == "색상변경" ||
+          cmd == "색깔바꾸기" ||
+          cmd == "색상바꾸기" ||
+          cmd == "색바꾸기"
+        ) {
           this._findRoutes(msg, "change_color");
         } else if (cmd == "게임역할변경") {
           this._findRoutes(msg, "change_role");
         } else if (/^(?=.*[가-힣]).{2,}$/.test(cmd)) {
           // 명령어가 없을 경우 클로드 이용
           // 한글 1자 이상, 전체 문장 2자 이상 포함될 경우 실행
-          askClaude(prompt.replace(/[ㄱ-ㅎㅏ-ㅣᴥ]/g, ""))
+
+          // chatPrompt.txt 파일 읽기
+          const systemPrompt = fs.readFileSync(
+            "prompts/chatPrompt.txt",
+            "utf-8"
+          );
+
+          askClaude(systemPrompt, prompt.replace(/[ㄱ-ㅎㅏ-ㅣᴥ]/g, ""))
             .then((response) => {
               this.#requestClaude(msg, response);
             })
@@ -62,8 +86,8 @@ class MsgCommandRoutes extends CommandRoutes {
               console.error("Error: ", error);
             });
         }
-      }
-    });
+      });
+    }
   }
 
   // Using Claude

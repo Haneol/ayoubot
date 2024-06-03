@@ -2,6 +2,8 @@ const { Client, Events, GatewayIntentBits } = require("discord.js");
 const { token } = require("./config.json");
 const MsgCommandRoutes = require("./routes/msgCommandRoutes");
 const { sequelize, initializeDatabase } = require("./config/database");
+const ButtonInteractionEvent = require("./events/buttonInteractionEvent");
+const ModalInteractionEvent = require("./events/modalInteractionEvent");
 
 const client = new Client({
   intents: [
@@ -31,12 +33,24 @@ client.once(Events.ClientReady, async (readyClient) => {
 });
 
 const msgCommandRoutes = new MsgCommandRoutes();
+const buttonInteractionEvent = new ButtonInteractionEvent();
+const modalInteractionEvent = new ModalInteractionEvent();
 
 client.on(Events.MessageCreate, async (msg) => {
   try {
     await msgCommandRoutes.routes(msg);
   } catch (error) {
     console.error("Error handling message:", error);
+  }
+});
+
+client.on(Events.InteractionCreate, async (interaction) => {
+  try {
+    if (interaction.isButton()) await buttonInteractionEvent.event(interaction);
+    else if (interaction.isModalSubmit())
+      await modalInteractionEvent.event(interaction);
+  } catch (error) {
+    console.error("Error handling interaction:", error);
   }
 });
 

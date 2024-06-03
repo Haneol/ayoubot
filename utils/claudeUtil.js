@@ -1,13 +1,9 @@
 const axios = require("axios");
-const fs = require("fs");
 
 const { claudeApiKey } = require("../config.json");
 const API_URL = "https://api.anthropic.com/v1/messages";
 
-// systemPrompt.txt 파일 읽기
-const systemPrompt = fs.readFileSync("systemPrompt.txt", "utf-8");
-
-async function askClaude(userPrompt) {
+async function askClaude(systemPrompt, userPrompt) {
   const messages = [
     {
       role: "user",
