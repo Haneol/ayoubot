@@ -52,8 +52,6 @@ class MsgCommandRoutes extends CommandRoutes {
           this._findRoutes(msg, "private_channel");
         } else if (cmd == "비밀채널생성") {
           this._findRoutes(msg, "create_private_channel");
-        } else if (cmd == "모각공") {
-          this._findRoutes(msg, "study_channel");
         } else if (
           cmd == "색변경" ||
           cmd == "색" ||
@@ -66,7 +64,23 @@ class MsgCommandRoutes extends CommandRoutes {
           cmd == "색바꾸기"
         ) {
           this._findRoutes(msg, "change_color");
-        } else if (cmd == "게임역할변경") {
+        } else if (
+          cmd == "게임역할변경" ||
+          cmd == "게임역할" ||
+          cmd == "게임" ||
+          cmd == "게임채널" ||
+          cmd == "게임채널변경" ||
+          cmd == "게임변경" ||
+          cmd == "겜역할변경" ||
+          cmd == "겜" ||
+          cmd == "겜역할" ||
+          cmd == "겜채널" ||
+          cmd == "겜채널변경" ||
+          cmd == "겜설정" ||
+          cmd == "게임설정" ||
+          cmd == "게임설정변경" ||
+          cmd == "겜설정변경"
+        ) {
           this._findRoutes(msg, "change_role");
         } else if (/^(?=.*[가-힣]).{2,}$/.test(cmd)) {
           // 명령어가 없을 경우 클로드 이용

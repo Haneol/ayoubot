@@ -1,6 +1,7 @@
 const helpController = require("../controllers/helpController");
 const adminController = require("../controllers/adminController");
 const colorController = require("../controllers/colorController");
+const gameController = require("../controllers/gameController");
 
 // Abstract Class
 class CommandRoutes {
@@ -30,34 +31,40 @@ class CommandRoutes {
         console.log(`유저 ${msg.author.username} : 어드민 도움말`);
         adminController.help(msg);
         break;
+
       case "help":
         console.log("명령어 : 도움말");
         helpController.help(msg);
         break;
+
       case "rule":
         console.log("명령어 : 규칙");
         break;
+
       case "channel":
         console.log("명령어 : 채널 관련");
         break;
+
       case "create_channel":
         console.log("명령어 : 채널 생성");
         break;
+
       case "private_channel":
         console.log("명령어 : 비밀채널 관련");
         break;
+
       case "create_private_channel":
         console.log("명령어 : 비밀 채널 생성");
         break;
-      case "study_channel":
-        console.log("명령어 : 모각공");
-        break;
+
       case "change_color":
         console.log(`유저 ${msg.author.username} : 색 변경`);
         colorController.run(msg);
         break;
+
       case "change_role":
-        console.log("명령어 : 게임 역할 변경");
+        console.log(`유저 ${msg.author.username} : 게임 역할 변경`);
+        gameController.run(msg);
         break;
     }
   }
