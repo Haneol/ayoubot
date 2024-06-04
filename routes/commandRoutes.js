@@ -2,6 +2,7 @@ const helpController = require("../controllers/helpController");
 const adminController = require("../controllers/adminController");
 const colorController = require("../controllers/colorController");
 const gameController = require("../controllers/gameController");
+const channelController = require("../controllers/channelController");
 
 // Abstract Class
 class CommandRoutes {
@@ -41,20 +42,9 @@ class CommandRoutes {
         console.log("명령어 : 규칙");
         break;
 
-      case "channel":
-        console.log("명령어 : 채널 관련");
-        break;
-
       case "create_channel":
-        console.log("명령어 : 채널 생성");
-        break;
-
-      case "private_channel":
-        console.log("명령어 : 비밀채널 관련");
-        break;
-
-      case "create_private_channel":
-        console.log("명령어 : 비밀 채널 생성");
+        console.log(`유저 ${msg.author.username} : 채널 생성`);
+        channelController.run(msg);
         break;
 
       case "change_color":

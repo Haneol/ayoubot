@@ -4,7 +4,7 @@ const {
   getMinMaxTemp,
   getAirQualityGrade,
 } = require("../utils/weatherUtil");
-const { formatCurrency, getExchangeRate } = require("../utils/moneyUtil");
+const { formatCurrency } = require("../utils/moneyUtil");
 
 exports.sendTodayEmbededMsg = async (
   channel,

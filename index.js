@@ -5,7 +5,9 @@ const MsgCommandRoutes = require("./routes/msgCommandRoutes");
 const { sequelize, initializeDatabase } = require("./config/database");
 const ButtonInteractionEvent = require("./events/buttonInteractionEvent");
 const ModalInteractionEvent = require("./events/modalInteractionEvent");
+const VoiceStateUpdateInteractionEvent = require("./events/voiceStateUpdateInteractionEvent");
 const todayController = require("./controllers/todayController");
+const { channels } = require("./controllers/channelController");
 
 const client = new Client({
   intents: [
@@ -34,7 +36,7 @@ client.once(Events.ClientReady, async (readyClient) => {
   }
 
   cron.schedule(
-    "0 10 * * *",
+    "0 8 * * *",
     () => {
       todayController.run(client);
     },
@@ -48,6 +50,7 @@ client.once(Events.ClientReady, async (readyClient) => {
 const msgCommandRoutes = new MsgCommandRoutes();
 const buttonInteractionEvent = new ButtonInteractionEvent();
 const modalInteractionEvent = new ModalInteractionEvent();
+const voiceStateUpdateEvent = new VoiceStateUpdateInteractionEvent();
 
 client.on(Events.MessageCreate, async (msg) => {
   try {
@@ -67,30 +70,53 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 });
 
-// 보이스채널 감지 로직 -> 수정 필요.
-const voiceTime = {};
+client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
+  await voiceStateUpdateEvent.event(oldState, newState);
+});
 
-client.on(Events.VoiceStateUpdate, (oldState, newState) => {
-  const member = newState.member;
-
-  if (!oldState.channel && newState.channel) {
-    // 사용자가 음성 채널에 입장했을 때
-    voiceTime[member.id] = Date.now();
-  } else if (oldState.channel && !newState.channel) {
-    // 사용자가 음성 채널에서 퇴장했을 때
-    if (voiceTime[member.id]) {
-      const duration = Date.now() - voiceTime[member.id];
-      const hours = Math.floor(duration / 3600000);
-      const minutes = Math.floor((duration % 3600000) / 60000);
-      const seconds = Math.floor((duration % 60000) / 1000);
-
-      console.log(
-        `${member.user.tag} 님이 음성 채널에서 ${hours}시간 ${minutes}분 ${seconds}초 동안 머물렀습니다.`
-      );
-
-      delete voiceTime[member.id];
-    }
+// SIGINT 이벤트 핸들러 (Ctrl+C로 봇 종료 시)
+process.on("SIGINT", async () => {
+  try {
+    console.log("Stop! Ctrl+C");
+    await cleanupChannels();
+    process.exit();
+  } catch (error) {
+    console.error("채널 삭제 중 오류 발생:", error);
+    process.exit(1);
   }
 });
+
+// uncaughtException 이벤트 핸들러 (예기치 않은 에러로 봇 종료 시)
+process.on("uncaughtException", async (error) => {
+  console.error("예기치 않은 에러 발생:", error);
+  try {
+    console.log("Stop! uncaughtException");
+    await cleanupChannels();
+    process.exit(1);
+  } catch (error) {
+    console.error("채널 삭제 중 오류 발생:", error);
+    process.exit(1);
+  }
+});
+
+// 채널 정리 함수
+async function cleanupChannels() {
+  try {
+    // 모든 길드에서 channels 객체에 있는 채널 삭제
+    for (const guild of client.guilds.cache.values()) {
+      for (const channelName in channels) {
+        const channelId = channels[channelName].id;
+        const channel = guild.channels.cache.get(channelId);
+        if (channel) {
+          await channel.delete();
+        }
+      }
+    }
+    // channels 객체 초기화
+    exports.channels = {};
+  } catch (error) {
+    console.error("채널 삭제 중 오류 발생:", error);
+  }
+}
 
 client.login(token);

@@ -44,14 +44,21 @@ class MsgCommandRoutes extends CommandRoutes {
           this._findRoutes(msg, "help");
         } else if (cmd == "규칙" || cmd == "서버규칙" || cmd == "룰") {
           this._findRoutes(msg, "rule");
-        } else if (cmd == "채널" || cmd == "공개채널" || cmd == "음성채널") {
-          this._findRoutes(msg, "channel");
-        } else if (cmd == "채널생성") {
+        } else if (
+          cmd == "채널" ||
+          cmd == "공개채널" ||
+          cmd == "음성채널" ||
+          cmd == "채널생성" ||
+          cmd == "비밀채널" ||
+          cmd == "방" ||
+          cmd == "비밀채널생성" ||
+          cmd == "공개채널생성" ||
+          cmd == "방생성" ||
+          cmd == "채널방" ||
+          cmd == "보이스채널" ||
+          cmd == "보이스채널생성"
+        ) {
           this._findRoutes(msg, "create_channel");
-        } else if (cmd == "비밀채널") {
-          this._findRoutes(msg, "private_channel");
-        } else if (cmd == "비밀채널생성") {
-          this._findRoutes(msg, "create_private_channel");
         } else if (
           cmd == "색변경" ||
           cmd == "색" ||

@@ -1,6 +1,8 @@
 const colorController = require("../controllers/colorController");
 const gameController = require("../controllers/gameController");
+const channelController = require("../controllers/channelController");
 const colorView = require("../views/colorView");
+const channelView = require("../views/channelView");
 
 class ButtonInteractionEvent {
   constructor() {
@@ -29,6 +31,10 @@ class ButtonInteractionEvent {
       await gameController.changeGame(interaction, 4);
     } else if (interaction.customId === "game_toggle_button_minecraft") {
       await gameController.changeGame(interaction, 5);
+    } else if (interaction.customId === "channel_create_button") {
+      await channelController.createChannelRequest(interaction);
+    } else if (interaction.customId === "private_channel_create_button") {
+      await channelView.sendCreatePrivateChannelEmbededMsg(interaction);
     }
   }
 }

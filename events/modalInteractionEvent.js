@@ -1,4 +1,5 @@
 const colorController = require("../controllers/colorController");
+const channelController = require("../controllers/channelController");
 
 class ModalInteractionEvent {
   constructor() {
@@ -11,6 +12,8 @@ class ModalInteractionEvent {
   async event(interaction) {
     if (interaction.customId === "color_modal") {
       await colorController.changeColor(interaction);
+    } else if (interaction.customId === "channel_modal") {
+      await channelController.createChannel(interaction);
     }
   }
 }

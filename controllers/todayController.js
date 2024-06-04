@@ -1,12 +1,13 @@
 const axios = require("axios");
 const todayView = require("../views/todayView");
 const { openWeatherApiKey, newsID, newsSecret } = require("../config.json");
+const { todayChannelId } = require("../channelId.json");
 
 // 날씨
 // 뉴스 헤드라인
 // 오늘의 스팀게임 할인
 exports.run = async (client) => {
-  const todayChannel = client.channels.cache.get("997210262648143892");
+  const todayChannel = client.channels.cache.get(todayChannelId);
 
   const today = new Date().toLocaleString("ko-KR", {
     timeZone: "Asia/Seoul",
