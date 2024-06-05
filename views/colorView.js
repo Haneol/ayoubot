@@ -8,6 +8,7 @@ const {
   TextInputBuilder,
 } = require("discord.js");
 const { createColorImage } = require("../utils/createColorImage");
+const userRoleString = require("../utils/stringUtil");
 
 exports.sendCurrentColorEmbededMsg = async (msg, color) => {
   // 버튼 추가
@@ -33,7 +34,7 @@ exports.sendCurrentColorEmbededMsg = async (msg, color) => {
 
     const embed = new EmbedBuilder()
       .setColor(0xf14966)
-      .setTitle("색상 변경")
+      .setTitle("💜 색상 변경")
       .setFooter({
         text: "그럴 수 있지",
         iconURL: "https://imgur.com/ARl3roS.png",
@@ -65,7 +66,7 @@ exports.sendCurrentColorEmbededMsg = async (msg, color) => {
   } else {
     const embed = new EmbedBuilder()
       .setColor(0xf14966)
-      .setTitle("색상 변경")
+      .setTitle("💜 색상 변경")
       .setFooter({
         text: "그럴 수 있지",
         iconURL: "https://imgur.com/ARl3roS.png",
@@ -92,12 +93,32 @@ exports.sendCurrentColorEmbededMsg = async (msg, color) => {
   }
 };
 
-exports.sendColorChangedEmbededMsg = async (interaction, color) => {
+exports.sendColorChangedEmbededMsg = async (interaction, color, user) => {
+  let titleInfoMsg;
+  let infoMsg;
+  switch (user.Role.roleName) {
+    case "MEMBER":
+      titleInfoMsg = `현재 남은 횟수 : ${user.countColor}/${user.Role.maxColor}`;
+      infoMsg = `등급 : ${userRoleString.member}`;
+      break;
+    case "VIP":
+      titleInfoMsg = `현재 남은 횟수 : ${user.countColor}/${user.Role.maxColor}`;
+      infoMsg = `등급 : ${userRoleString.vip}`;
+      break;
+    case "VVIP":
+      titleInfoMsg = `제한없이 즐기세요 : ${user.countColor}`;
+      infoMsg = `등급 : ${userRoleString.vvip}`;
+      break;
+    case "ADMIN":
+      infoMsg = `${user.countColor}/∞\nADMIN`;
+      break;
+  }
+
   const colorImage = await createColorImage(color);
 
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
-    .setTitle("색상 변경 완료")
+    .setTitle("✅ 색상 변경 완료")
     .setFooter({
       text: "그럴 수 있지",
       iconURL: "https://imgur.com/ARl3roS.png",
@@ -107,6 +128,10 @@ exports.sendColorChangedEmbededMsg = async (interaction, color) => {
     **${color}** 색상으로 변경하였습니다.
         `
     )
+    .addFields({
+      name: titleInfoMsg,
+      value: infoMsg,
+    })
     .setThumbnail("attachment://color.png");
 
   await interaction.reply({
@@ -137,12 +162,52 @@ exports.sendColorChangedModal = async (interaction) => {
 exports.sendColorDeletedEmbededMsg = async (interaction) => {
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
-    .setTitle("색상 지우기 완료")
+    .setTitle("✅ 색상 지우기 완료")
     .setFooter({
       text: "그럴 수 있지",
       iconURL: "https://imgur.com/ARl3roS.png",
     })
     .setDescription("색상을 지웠습니다.");
+
+  await interaction.reply({
+    embeds: [embed],
+    ephemeral: true,
+  });
+};
+
+exports.sendColorFailedBecauseOfCountEmbededMsg = async (interaction, user) => {
+  let titleInfoMsg;
+  let infoMsg;
+  switch (user.Role.roleName) {
+    case "MEMBER":
+      titleInfoMsg = `현재 남은 횟수 : ${user.countColor}/${user.Role.maxColor}`;
+      infoMsg = `등급 : ${userRoleString.member}`;
+      break;
+    case "VIP":
+      titleInfoMsg = `현재 남은 횟수 : ${user.countColor}/${user.Role.maxColor}`;
+      infoMsg = `등급 : ${userRoleString.vip}`;
+      break;
+    case "VVIP":
+      titleInfoMsg = `제한없이 즐기세요 : ${user.countColor}`;
+      infoMsg = `등급 : ${userRoleString.vvip}`;
+      break;
+    case "ADMIN":
+      infoMsg = `${user.countColor}/∞\nADMIN`;
+      break;
+  }
+  // 임베드 메시지 생성
+  const embed = new EmbedBuilder()
+    .setColor(0xf14966)
+    .setTitle("🚫 색상 변경 실패")
+    .setFooter({
+      text: "그럴 수 있지",
+      iconURL: "https://imgur.com/ARl3roS.png",
+    })
+    .setDescription("변경 한계에 도달하였습니다.")
+    .addFields({
+      name: titleInfoMsg,
+      value: infoMsg,
+    });
 
   await interaction.reply({
     embeds: [embed],

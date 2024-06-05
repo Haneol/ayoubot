@@ -63,7 +63,7 @@ exports.sendChannelEmbededMsg = async (msg) => {
 exports.sendCreateChannelModal = async (interaction) => {
   const modal = new ModalBuilder()
     .setCustomId("channel_modal")
-    .setTitle("📡 공개 채널 생성");
+    .setTitle("공개 채널 생성");
 
   const input = new TextInputBuilder()
     .setCustomId("channel_create_input")

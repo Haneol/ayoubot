@@ -18,10 +18,10 @@ const initializeDatabase = async (guild) => {
   // 기본 Role 데이터 추가
   await Role.bulkCreate(
     [
-      { roleName: "MEMBER", maxChat: 20, maxChannel: 2 },
-      { roleName: "VIP", maxChat: 70, maxChannel: 7 },
-      { roleName: "VVIP", maxChat: 500, maxChannel: 0 },
-      { roleName: "ADMIN", maxChat: 0, maxChannel: 0 },
+      { roleName: "MEMBER", maxChat: 20, maxChannel: 2, maxColor: 5 },
+      { roleName: "VIP", maxChat: 70, maxChannel: 7, maxColor: 20 },
+      { roleName: "VVIP", maxChat: 500, maxChannel: 0, maxColor: 0 },
+      { roleName: "ADMIN", maxChat: 0, maxChannel: 0, maxColor: 0 },
     ],
     {
       ignoreDuplicates: true,

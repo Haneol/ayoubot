@@ -1,12 +1,27 @@
 const fs = require("fs");
 const colorView = require("../views/colorView");
 const { askClaude } = require("../utils/claudeUtil");
+const userRepository = require("../repositories/userRepository");
 
 exports.run = async (msg) => {
   const roleName = msg.author.username;
   let role = msg.guild.roles.cache.find((role) => role.name === roleName);
 
   await colorView.sendCurrentColorEmbededMsg(msg, role.color);
+};
+
+exports.changeColorRequest = async (interaction) => {
+  const user = await userRepository.getUserByName(interaction.member.id);
+
+  if (
+    user.Role.roleName === "ADMIN" ||
+    user.Role.roleName === "VVIP" ||
+    user.countColor < user.Role.maxColor
+  ) {
+    await colorView.sendColorChangedModal(interaction);
+  } else {
+    await colorView.sendColorFailedBecauseOfCountEmbededMsg(interaction, user);
+  }
 };
 
 exports.changeColor = async (interaction) => {
@@ -43,7 +58,12 @@ exports.changeColor = async (interaction) => {
   await interaction.guild.roles.cache
     .find((role) => role.name === roleName)
     .setColor(hexcode)
-    .then(colorView.sendColorChangedEmbededMsg(interaction, hexcode))
+    .then(async () => {
+      await userRepository.incrementUserCountColor(interaction.ayouUser);
+
+      const user = await userRepository.getUserByName(interaction.member.id);
+      await colorView.sendColorChangedEmbededMsg(interaction, hexcode, user);
+    })
     .catch(console.error);
 };
 

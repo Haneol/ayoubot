@@ -1,7 +1,6 @@
 const colorController = require("../controllers/colorController");
 const gameController = require("../controllers/gameController");
 const channelController = require("../controllers/channelController");
-const colorView = require("../views/colorView");
 
 class ButtonInteractionEvent {
   constructor() {
@@ -13,7 +12,7 @@ class ButtonInteractionEvent {
 
   async event(interaction) {
     if (interaction.customId === "open_color_modal") {
-      await colorView.sendColorChangedModal(interaction);
+      await colorController.changeColorRequest(interaction);
     } else if (interaction.customId === "delete_color") {
       await colorController.deleteColor(interaction);
     } else if (interaction.customId === "game_toggle_button") {

@@ -63,7 +63,7 @@ exports.updateUser = async (userID, userName, roleID) => {
   }
 };
 
-// 업데이트 테스트
+// chat Count
 exports.incrementUserCountChat = async (userId) => {
   try {
     // 사용자 정보와 역할 정보를 가져옴
@@ -122,6 +122,39 @@ exports.incrementUserCountChannel = async (userId) => {
     return true;
   } catch (error) {
     console.error("Error incrementing user countCreateChannel:", error);
+    return false;
+  }
+};
+
+// color Count
+exports.incrementUserCountColor = async (userId) => {
+  try {
+    // 사용자 정보와 역할 정보를 가져옴
+    const user = await User.findOne({
+      where: { userID: userId },
+      include: [{ model: Role }],
+    });
+
+    if (!user) {
+      return false;
+    }
+
+    const {
+      countColor,
+      Role: { maxColor },
+    } = user;
+
+    if (countColor >= maxColor) {
+      return false;
+    }
+
+    await User.increment("countColor", {
+      by: 1,
+      where: { userID: userId },
+    });
+    return true;
+  } catch (error) {
+    console.error("Error incrementing user countColor:", error);
     return false;
   }
 };
