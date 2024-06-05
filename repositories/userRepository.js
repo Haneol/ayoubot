@@ -93,6 +93,39 @@ exports.incrementUserCountChat = async (userId) => {
   }
 };
 
+// channel Count
+exports.incrementUserCountChannel = async (userId) => {
+  try {
+    // 사용자 정보와 역할 정보를 가져옴
+    const user = await User.findOne({
+      where: { userID: userId },
+      include: [{ model: Role }],
+    });
+
+    if (!user) {
+      return false;
+    }
+
+    const {
+      countCreateChannel,
+      Role: { maxChannel },
+    } = user;
+
+    if (countCreateChannel >= maxChannel) {
+      return false;
+    }
+
+    await User.increment("countCreateChannel", {
+      by: 1,
+      where: { userID: userId },
+    });
+    return true;
+  } catch (error) {
+    console.error("Error incrementing user countCreateChannel:", error);
+    return false;
+  }
+};
+
 // 사용자 삭제
 exports.deleteUser = async (userID) => {
   try {

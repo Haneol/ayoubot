@@ -1,10 +1,19 @@
 const { Client, Events, GatewayIntentBits } = require("discord.js");
 const { token } = require("./config.json");
 const cron = require("node-cron");
+const {
+  authenticateUserWithInteraction,
+} = require("./middlewares/userMiddleware");
 const MsgCommandRoutes = require("./routes/msgCommandRoutes");
-const { sequelize, initializeDatabase } = require("./config/database");
+const {
+  sequelize,
+  initializeDatabase,
+  Role,
+  User,
+} = require("./config/database");
 const ButtonInteractionEvent = require("./events/buttonInteractionEvent");
 const ModalInteractionEvent = require("./events/modalInteractionEvent");
+const SelectMenuInteractionEvent = require("./events/selectMenuInteractionEvent");
 const VoiceStateUpdateInteractionEvent = require("./events/voiceStateUpdateInteractionEvent");
 const todayController = require("./controllers/todayController");
 const { channels } = require("./controllers/channelController");
@@ -27,7 +36,9 @@ client.once(Events.ClientReady, async (readyClient) => {
   try {
     await sequelize.authenticate();
     console.log("Database connection has been established successfully.");
-    await initializeDatabase();
+
+    const guild = await client.guilds.cache.first();
+    await initializeDatabase(guild);
     await sequelize.sync(); // Model & Database Sync
     console.log("Database synced");
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
@@ -36,6 +47,7 @@ client.once(Events.ClientReady, async (readyClient) => {
   }
 
   cron.schedule(
+    //"*/5 * * * * *",
     "0 8 * * *",
     () => {
       todayController.run(client);
@@ -51,7 +63,9 @@ const msgCommandRoutes = new MsgCommandRoutes();
 const buttonInteractionEvent = new ButtonInteractionEvent();
 const modalInteractionEvent = new ModalInteractionEvent();
 const voiceStateUpdateEvent = new VoiceStateUpdateInteractionEvent();
+const selectMenuInteractionEvent = new SelectMenuInteractionEvent();
 
+// 메시지 이벤트 처리
 client.on(Events.MessageCreate, async (msg) => {
   try {
     await msgCommandRoutes.routes(msg);
@@ -60,16 +74,23 @@ client.on(Events.MessageCreate, async (msg) => {
   }
 });
 
+// 상호작용 이벤트 처리
 client.on(Events.InteractionCreate, async (interaction) => {
-  try {
-    if (interaction.isButton()) await buttonInteractionEvent.event(interaction);
-    else if (interaction.isModalSubmit())
-      await modalInteractionEvent.event(interaction);
-  } catch (error) {
-    console.error("Error handling interaction:", error);
-  }
+  await authenticateUserWithInteraction(interaction, async () => {
+    try {
+      if (interaction.isButton())
+        await buttonInteractionEvent.event(interaction);
+      else if (interaction.isModalSubmit())
+        await modalInteractionEvent.event(interaction);
+      else if (interaction.isStringSelectMenu())
+        await selectMenuInteractionEvent.event(interaction);
+    } catch (error) {
+      console.error("Error handling interaction:", error);
+    }
+  });
 });
 
+// 보이스 채널 이벤트 처리
 client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
   await voiceStateUpdateEvent.event(oldState, newState);
 });

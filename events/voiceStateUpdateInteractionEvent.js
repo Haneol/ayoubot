@@ -49,15 +49,15 @@ class VoiceStateUpdateInteractionEvent {
         delete channels[channelName].members[member.id];
       }
 
-      if (oldState.channel.members.size === 0) {
-        // 5초 후에 채널 삭제 예약
+      if (oldState.channel.members.size === 0 && channels[channelName]) {
+        // 10초 후에 채널 삭제 예약
         const deleteTimer = setTimeout(async () => {
           if (channels[channelName] && oldState.channel.members.size === 0) {
             await oldState.channel.delete();
             delete channels[channelName];
             console.log(channelName + " 삭제되었습니다.");
           }
-        }, 5000);
+        }, 10000);
         channels[channelName].deleteTimer = deleteTimer;
         console.log(channelName + " 삭제 예정 상태");
       }

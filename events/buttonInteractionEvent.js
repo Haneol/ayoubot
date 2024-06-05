@@ -2,7 +2,6 @@ const colorController = require("../controllers/colorController");
 const gameController = require("../controllers/gameController");
 const channelController = require("../controllers/channelController");
 const colorView = require("../views/colorView");
-const channelView = require("../views/channelView");
 
 class ButtonInteractionEvent {
   constructor() {
@@ -34,7 +33,11 @@ class ButtonInteractionEvent {
     } else if (interaction.customId === "channel_create_button") {
       await channelController.createChannelRequest(interaction);
     } else if (interaction.customId === "private_channel_create_button") {
-      await channelView.sendCreatePrivateChannelEmbededMsg(interaction);
+      await channelController.createPrivateChannelRequest(interaction);
+    } else if (
+      interaction.customId === "private_channel_create_confirm_button"
+    ) {
+      await channelController.createPrivateChannel(interaction);
     }
   }
 }
