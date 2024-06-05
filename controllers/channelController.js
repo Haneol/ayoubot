@@ -133,8 +133,7 @@ exports.createPrivateChannel = async (interaction) => {
           members: {},
         };
 
-        if (user.Role.roleName !== "ADMIN")
-          await userRepository.incrementUserCountChannel(user.userID);
+        await userRepository.incrementUserCountChannel(user.userID);
 
         const newUser = await userRepository.getUserByName(
           interaction.member.id

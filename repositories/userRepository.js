@@ -78,10 +78,10 @@ exports.incrementUserCountChat = async (userId) => {
 
     const {
       countChat,
-      Role: { maxChat },
+      Role: { roleName, maxChat },
     } = user;
 
-    if (countChat >= maxChat) {
+    if (roleName !== "ADMIN" && countChat >= maxChat) {
       return false;
     }
 
@@ -108,10 +108,14 @@ exports.incrementUserCountChannel = async (userId) => {
 
     const {
       countCreateChannel,
-      Role: { maxChannel },
+      Role: { roleName, maxChannel },
     } = user;
 
-    if (countCreateChannel >= maxChannel) {
+    if (
+      roleName !== "ADMIN" &&
+      roleName !== "VVIP" &&
+      countCreateChannel >= maxChannel
+    ) {
       return false;
     }
 
@@ -141,10 +145,10 @@ exports.incrementUserCountColor = async (userId) => {
 
     const {
       countColor,
-      Role: { maxColor },
+      Role: { roleName, maxColor },
     } = user;
 
-    if (countColor >= maxColor) {
+    if (roleName !== "ADMIN" && roleName !== "VVIP" && countColor >= maxColor) {
       return false;
     }
 

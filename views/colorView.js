@@ -94,25 +94,7 @@ exports.sendCurrentColorEmbededMsg = async (msg, color) => {
 };
 
 exports.sendColorChangedEmbededMsg = async (interaction, color, user) => {
-  let titleInfoMsg;
-  let infoMsg;
-  switch (user.Role.roleName) {
-    case "MEMBER":
-      titleInfoMsg = `현재 남은 횟수 : ${user.countColor}/${user.Role.maxColor}`;
-      infoMsg = `등급 : ${userRoleString.member}`;
-      break;
-    case "VIP":
-      titleInfoMsg = `현재 남은 횟수 : ${user.countColor}/${user.Role.maxColor}`;
-      infoMsg = `등급 : ${userRoleString.vip}`;
-      break;
-    case "VVIP":
-      titleInfoMsg = `제한없이 즐기세요 : ${user.countColor}`;
-      infoMsg = `등급 : ${userRoleString.vvip}`;
-      break;
-    case "ADMIN":
-      infoMsg = `${user.countColor}/∞\nADMIN`;
-      break;
-  }
+  const [fieldName, fieldValue] = infoMsg(user);
 
   const colorImage = await createColorImage(color);
 
@@ -129,8 +111,8 @@ exports.sendColorChangedEmbededMsg = async (interaction, color, user) => {
         `
     )
     .addFields({
-      name: titleInfoMsg,
-      value: infoMsg,
+      name: fieldName,
+      value: fieldValue,
     })
     .setThumbnail("attachment://color.png");
 
@@ -176,25 +158,7 @@ exports.sendColorDeletedEmbededMsg = async (interaction) => {
 };
 
 exports.sendColorFailedBecauseOfCountEmbededMsg = async (interaction, user) => {
-  let titleInfoMsg;
-  let infoMsg;
-  switch (user.Role.roleName) {
-    case "MEMBER":
-      titleInfoMsg = `현재 남은 횟수 : ${user.countColor}/${user.Role.maxColor}`;
-      infoMsg = `등급 : ${userRoleString.member}`;
-      break;
-    case "VIP":
-      titleInfoMsg = `현재 남은 횟수 : ${user.countColor}/${user.Role.maxColor}`;
-      infoMsg = `등급 : ${userRoleString.vip}`;
-      break;
-    case "VVIP":
-      titleInfoMsg = `제한없이 즐기세요 : ${user.countColor}`;
-      infoMsg = `등급 : ${userRoleString.vvip}`;
-      break;
-    case "ADMIN":
-      infoMsg = `${user.countColor}/∞\nADMIN`;
-      break;
-  }
+  const [fieldName, fieldValue] = infoMsg(user);
   // 임베드 메시지 생성
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
@@ -205,8 +169,8 @@ exports.sendColorFailedBecauseOfCountEmbededMsg = async (interaction, user) => {
     })
     .setDescription("변경 한계에 도달하였습니다.")
     .addFields({
-      name: titleInfoMsg,
-      value: infoMsg,
+      name: fieldName,
+      value: fieldValue,
     });
 
   await interaction.reply({
@@ -214,3 +178,26 @@ exports.sendColorFailedBecauseOfCountEmbededMsg = async (interaction, user) => {
     ephemeral: true,
   });
 };
+
+function infoMsg(user) {
+  switch (user.Role.roleName) {
+    case "MEMBER":
+      return [
+        `현재 남은 횟수 : ${user.countColor}/${user.Role.maxColor}`,
+        `등급 : ${userRoleString.member}`,
+      ];
+    case "VIP":
+      return [
+        `현재 남은 횟수 : ${user.countColor}/${user.Role.maxColor}`,
+        `등급 : ${userRoleString.vip}`,
+      ];
+    case "VVIP":
+      return [
+        `제한없이 즐기세요 : ${user.countColor}`,
+        `등급 : ${userRoleString.vvip}`,
+      ];
+    case "ADMIN":
+      return [`제한없이 즐기세요 : ${user.countColor}`, `등급 : ADMIN`];
+      break;
+  }
+}

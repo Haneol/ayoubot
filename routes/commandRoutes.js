@@ -33,15 +33,6 @@ class CommandRoutes {
         adminController.help(msg);
         break;
 
-      case "help":
-        console.log("명령어 : 도움말");
-        helpController.help(msg);
-        break;
-
-      case "rule":
-        console.log("명령어 : 규칙");
-        break;
-
       case "create_channel":
         console.log(`유저 ${msg.author.username} : 채널 생성`);
         channelController.run(msg);

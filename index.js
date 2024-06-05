@@ -5,17 +5,13 @@ const {
   authenticateUserWithInteraction,
 } = require("./middlewares/userMiddleware");
 const MsgCommandRoutes = require("./routes/msgCommandRoutes");
-const {
-  sequelize,
-  initializeDatabase,
-  Role,
-  User,
-} = require("./config/database");
+const { sequelize, initializeDatabase } = require("./config/database");
 const ButtonInteractionEvent = require("./events/buttonInteractionEvent");
 const ModalInteractionEvent = require("./events/modalInteractionEvent");
 const SelectMenuInteractionEvent = require("./events/selectMenuInteractionEvent");
 const VoiceStateUpdateInteractionEvent = require("./events/voiceStateUpdateInteractionEvent");
 const todayController = require("./controllers/todayController");
+const helpController = require("./controllers/helpController");
 const { channels } = require("./controllers/channelController");
 
 const client = new Client({
@@ -33,14 +29,16 @@ client.once(Events.ClientReady, async (readyClient) => {
     status: "online",
   });
 
+  const guild = await client.guilds.cache.first();
+
   try {
     await sequelize.authenticate();
     console.log("Database connection has been established successfully.");
 
-    const guild = await client.guilds.cache.first();
     await initializeDatabase(guild);
     await sequelize.sync(); // Model & Database Sync
     console.log("Database synced");
+    await helpController.run(client);
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
   } catch (error) {
     console.error("Unable to connect to the database:", error);

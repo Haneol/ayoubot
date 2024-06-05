@@ -66,6 +66,7 @@ exports.authenticateUserWithInteraction = async (interaction, next) => {
 
     // 사용자가 없다면 사용자 생성
     if (!user) {
+      console.log("사용자 생성 중");
       const defaultRoleName = "MEMBER";
       const defaultRole = await roleRepository.getRoleByName(defaultRoleName);
 
@@ -88,13 +89,14 @@ exports.authenticateUserWithInteraction = async (interaction, next) => {
     interaction.ayouUser = user.userID;
 
     // 사용자 역할 조회
-    const roleName = interaction.member.username;
+    const roleName = interaction.member.user.username;
     let role = interaction.guild.roles.cache.find(
       (role) => role.name === roleName
     );
 
     // 사용자 역할이 없다면 사용자 역할 생성
     if (!role) {
+      console.log("사용자 역할 생성 중");
       role = await interaction.guild.roles.create({
         name: roleName,
         permissions: [],

@@ -79,26 +79,7 @@ exports.sendCreateChannelModal = async (interaction) => {
 };
 
 exports.sendCreatePrivateChannelEmbededMsg = async (interaction, user) => {
-  let titleInfoMsg;
-  let infoMsg;
-  // 초기화까지 며칠 남았는지 체크하는거 추가하기
-  switch (user.Role.roleName) {
-    case "MEMBER":
-      titleInfoMsg = `현재 남은 횟수 : ${user.countCreateChannel}/${user.Role.maxChannel}`;
-      infoMsg = `등급 : ${userRoleString.member}`;
-      break;
-    case "VIP":
-      titleInfoMsg = `현재 남은 횟수 : ${user.countCreateChannel}/${user.Role.maxChannel}`;
-      infoMsg = `등급 : ${userRoleString.vip}`;
-      break;
-    case "VVIP":
-      titleInfoMsg = `제한없이 즐기세요 : ${user.countCreateChannel}`;
-      infoMsg = `등급 : ${userRoleString.vvip}`;
-      break;
-    case "ADMIN":
-      infoMsg = `${user.countCreateChannel}/∞\nADMIN`;
-      break;
-  }
+  const [fieldName, fieldValue] = infoMsg(user);
   // 버튼 추가
   const button = new ButtonBuilder()
     .setCustomId("private_channel_create_confirm_button")
@@ -125,8 +106,8 @@ exports.sendCreatePrivateChannelEmbededMsg = async (interaction, user) => {
     `
     )
     .addFields({
-      name: titleInfoMsg,
-      value: infoMsg,
+      name: fieldName,
+      value: fieldValue,
     });
 
   await interaction.reply({
@@ -193,26 +174,7 @@ exports.sendChannelCreateFailedEmbededBecauseOfEmojiMsg = async (
 };
 
 exports.sendPrivateChannelCreatedEmbededMsg = async (interaction, user) => {
-  let titleInfoMsg;
-  let infoMsg;
-  // 초기화까지 며칠 남았는지 체크하는거 추가하기
-  switch (user.Role.roleName) {
-    case "MEMBER":
-      titleInfoMsg = `현재 남은 횟수 : ${user.countCreateChannel}/${user.Role.maxChannel}`;
-      infoMsg = `등급 : ${userRoleString.member}`;
-      break;
-    case "VIP":
-      titleInfoMsg = `현재 남은 횟수 : ${user.countCreateChannel}/${user.Role.maxChannel}`;
-      infoMsg = `등급 : ${userRoleString.vip}`;
-      break;
-    case "VVIP":
-      titleInfoMsg = `제한없이 즐기세요 : ${user.countCreateChannel}`;
-      infoMsg = `등급 : ${userRoleString.vvip}`;
-      break;
-    case "ADMIN":
-      infoMsg = `${user.countCreateChannel}/∞\nADMIN`;
-      break;
-  }
+  const [fieldName, fieldValue] = infoMsg(user);
   // 임베드 메시지 생성
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
@@ -225,8 +187,8 @@ exports.sendPrivateChannelCreatedEmbededMsg = async (interaction, user) => {
       "비밀채널이 생성되었습니다.\n비밀 채널 관리 버튼을 한번 더 눌러 유저를 초대하세요!"
     )
     .addFields({
-      name: titleInfoMsg,
-      value: infoMsg,
+      name: fieldName,
+      value: fieldValue,
     });
 
   await interaction.update({
@@ -240,26 +202,7 @@ exports.sendPrivateChannelCreateFailedBecauseOfCountEmbededMsg = async (
   interaction,
   user
 ) => {
-  let titleInfoMsg;
-  let infoMsg;
-  // 초기화까지 며칠 남았는지 체크하는거 추가하기
-  switch (user.Role.roleName) {
-    case "MEMBER":
-      titleInfoMsg = `현재 남은 횟수 : ${user.countCreateChannel}/${user.Role.maxChannel}`;
-      infoMsg = `등급 : ${userRoleString.member}`;
-      break;
-    case "VIP":
-      titleInfoMsg = `현재 남은 횟수 : ${user.countCreateChannel}/${user.Role.maxChannel}`;
-      infoMsg = `등급 : ${userRoleString.vip}`;
-      break;
-    case "VVIP":
-      titleInfoMsg = `제한없이 즐기세요 : ${user.countCreateChannel}`;
-      infoMsg = `등급 : ${userRoleString.vvip}`;
-      break;
-    case "ADMIN":
-      infoMsg = `${user.countCreateChannel}/∞\nADMIN`;
-      break;
-  }
+  const [fieldName, fieldValue] = infoMsg(user);
   // 임베드 메시지 생성
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
@@ -270,8 +213,8 @@ exports.sendPrivateChannelCreateFailedBecauseOfCountEmbededMsg = async (
     })
     .setDescription("생성 한계에 도달하였습니다.")
     .addFields({
-      name: titleInfoMsg,
-      value: infoMsg,
+      name: fieldName,
+      value: fieldValue,
     });
 
   await interaction.reply({
@@ -329,3 +272,26 @@ exports.sendPrivateChannelManageEmbededMsgUpdate = async (
 
   await interaction.update({ components: [updatedRow] });
 };
+
+function infoMsg(user) {
+  switch (user.Role.roleName) {
+    case "MEMBER":
+      return [
+        `현재 남은 횟수 : ${user.countCreateChannel}/${user.Role.maxChannel}`,
+        `등급 : ${userRoleString.member}`,
+      ];
+    case "VIP":
+      return [
+        `현재 남은 횟수 : ${user.countCreateChannel}/${user.Role.maxChannel}`,
+        `등급 : ${userRoleString.vip}`,
+      ];
+    case "VVIP":
+      return [
+        `제한없이 즐기세요 : ${user.countCreateChannel}`,
+        `등급 : ${userRoleString.vvip}`,
+      ];
+    case "ADMIN":
+      return [`제한없이 즐기세요 : ${user.countCreateChannel}`, `등급 : ADMIN`];
+      break;
+  }
+}

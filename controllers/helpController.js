@@ -1,6 +1,13 @@
-const HelpView = require("../views/helpView");
+const { ayouRemoteControllerId } = require("../channelId.json");
+const helpView = require("../views/helpView");
 
-exports.help = (msg) => {
-  const helpView = new HelpView(msg);
-  helpView.sendEmbededMsg();
+exports.run = async (client) => {
+  const r_channel = client.channels.cache.get(ayouRemoteControllerId);
+
+  await r_channel
+    .bulkDelete(5)
+    .then((msg) => console.log(`Bulk deleted ${msg.size} messages`))
+    .catch(console.error);
+
+  await helpView.sendEmbededMsg(r_channel);
 };

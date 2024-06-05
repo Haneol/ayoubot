@@ -20,31 +20,13 @@ class MsgCommandRoutes extends CommandRoutes {
           }
         }
       });
-    } else if (msg.content.startsWith("믫 ")) {
+    } else if (msg.content.startsWith("믫 ") || msg.content.startsWith("!!")) {
       // userMiddleware 사용
       await authenticateUser(msg, async () => {
         const prompt = msg.content.slice(2).trim();
         const cmd = prompt.replace(/\s/g, "");
 
         if (
-          cmd == "?" ||
-          cmd == "도움" ||
-          cmd == "도움말" ||
-          cmd == "명령어" ||
-          cmd == "기능" ||
-          cmd == "사용법" ||
-          cmd == "기능" ||
-          cmd == "가이드" ||
-          cmd == "설명서" ||
-          cmd == "헬프" ||
-          cmd == "헲" ||
-          cmd == "헬프미" ||
-          cmd == "헲미"
-        ) {
-          this._findRoutes(msg, "help");
-        } else if (cmd == "규칙" || cmd == "서버규칙" || cmd == "룰") {
-          this._findRoutes(msg, "rule");
-        } else if (
           cmd == "채널" ||
           cmd == "공개채널" ||
           cmd == "음성채널" ||

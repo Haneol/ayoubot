@@ -14,7 +14,7 @@ Role.associate({ User });
 User.associate({ Role });
 
 const initializeDatabase = async (guild) => {
-  await sequelize.sync({ force: true }); // force: true -> DB 초기화
+  await sequelize.sync({ force: false }); // force: true -> DB 초기화
   // 기본 Role 데이터 추가
   await Role.bulkCreate(
     [
@@ -47,11 +47,15 @@ const initializeDatabase = async (guild) => {
     members
       .filter((member) => !member.user.bot)
       .map(async (member) => {
-        await User.findOrCreate({
+        const [user, created] = await User.findOrCreate({
           where: { userName: member.id },
           defaults: { roleID: memberRole.roleID },
         });
-        console.log("user: " + member.user.username + " 추가 중...");
+        if (created) {
+          console.log(`신규 유저: ${member.user.username} 추가 완료`);
+        } else {
+          console.log(`기존 유저: ${member.user.username} 이미 존재`);
+        }
       })
   );
 };
