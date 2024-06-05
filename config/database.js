@@ -14,7 +14,7 @@ Role.associate({ User });
 User.associate({ Role });
 
 const initializeDatabase = async (guild) => {
-  await sequelize.sync({ force: false }); // force: true -> DB 초기화
+  await sequelize.sync({ force: true }); // force: true -> DB 초기화
   // 기본 Role 데이터 추가
   await Role.bulkCreate(
     [

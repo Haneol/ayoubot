@@ -58,6 +58,16 @@ class CommandRoutes {
         adminController.setUserRole(msg);
         break;
 
+      case "admin_time_all_user":
+        console.log(`유저 ${msg.author.username} : 어드민 Get all user time`);
+        adminController.getUserTimeList(msg);
+        break;
+
+      case "admin_time_user_by_id":
+        console.log(`유저 ${msg.author.username} : 어드민 Get user time by id`);
+        adminController.getUserTimeById(msg);
+        break;
+
       case "create_channel":
         console.log(`유저 ${msg.author.username} : 채널 생성`);
         channelController.run(msg);

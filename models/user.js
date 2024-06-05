@@ -22,6 +22,10 @@ module.exports = (sequelize) => {
           key: "roleID",
         },
       },
+      connectionTime: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
       countChat: {
         type: DataTypes.INTEGER,
         defaultValue: 0,

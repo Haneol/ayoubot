@@ -41,6 +41,13 @@ class MsgCommandRoutes extends CommandRoutes {
             msg.argsId = prompt[1];
             msg.argsRole = prompt[2];
             this._findRoutes(msg, "admin_set_user_role");
+          } else if (prompt[0] == "time") {
+            if (prompt[1] == "list") {
+              this._findRoutes(msg, "admin_time_all_user");
+            } else if (prompt[1]) {
+              msg.argsId = prompt[1];
+              this._findRoutes(msg, "admin_time_user_by_id");
+            }
           }
         }
       });

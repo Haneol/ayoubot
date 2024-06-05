@@ -1,5 +1,7 @@
 const voiceTime = {};
+
 const { channels } = require("../controllers/channelController");
+const userRepository = require("../repositories/userRepository");
 
 class VoiceStateUpdateInteractionEvent {
   constructor() {
@@ -32,13 +34,9 @@ class VoiceStateUpdateInteractionEvent {
       // 사용자가 음성 채널에서 퇴장했을 때
       if (voiceTime[member.id]) {
         const duration = Date.now() - voiceTime[member.id];
-        const hours = Math.floor(duration / 3600000);
-        const minutes = Math.floor((duration % 3600000) / 60000);
-        const seconds = Math.floor((duration % 60000) / 1000);
+        const seconds = Math.floor(duration / 1000);
 
-        console.log(
-          `${member.user.tag} 님이 음성 채널에서 ${hours}시간 ${minutes}분 ${seconds}초 동안 머물렀습니다.`
-        );
+        userRepository.updateConnectionTime(member.id, seconds);
 
         delete voiceTime[member.id];
       }

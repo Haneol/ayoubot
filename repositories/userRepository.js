@@ -1,3 +1,4 @@
+const { Sequelize } = require("sequelize");
 const { User, Role } = require("../config/database");
 
 // 사용자 생성
@@ -77,6 +78,24 @@ exports.updateUser = async (userID, userName, roleID) => {
     return null;
   } catch (error) {
     throw new Error("사용자 업데이트에 실패했습니다. (" + error + ")");
+  }
+};
+
+// connectionTime 업데이트 함수
+exports.updateConnectionTime = async (userId, time) => {
+  try {
+    await User.update(
+      {
+        connectionTime: Sequelize.literal(`connectionTime + ${time}`),
+      },
+      {
+        where: { userName: userId },
+      }
+    );
+    console.log(`User ${userId} connectionTime updated successfully`);
+  } catch (error) {
+    console.error("Error updating connectionTime:", error);
+    throw error;
   }
 };
 
