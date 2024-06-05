@@ -33,6 +33,31 @@ class CommandRoutes {
         adminController.help(msg);
         break;
 
+      case "admin_all_user_get":
+        console.log(`유저 ${msg.author.username} : 어드민 Get all user`);
+        adminController.userList(msg);
+        break;
+
+      case "admin_user_by_role_get":
+        console.log(`유저 ${msg.author.username} : 어드민 Get user by role`);
+        adminController.userListByRole(msg);
+        break;
+
+      case "admin_user_by_id_get":
+        console.log(`유저 ${msg.author.username} : 어드민 Get user by id`);
+        adminController.userById(msg);
+        break;
+
+      case "admin_set_user":
+        console.log(`유저 ${msg.author.username} : 어드민 Set user`);
+        adminController.setUserCount(msg);
+        break;
+
+      case "admin_set_user_role":
+        console.log(`유저 ${msg.author.username} : 어드민 Set user role`);
+        adminController.setUserRole(msg);
+        break;
+
       case "create_channel":
         console.log(`유저 ${msg.author.username} : 채널 생성`);
         channelController.run(msg);

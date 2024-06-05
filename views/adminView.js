@@ -1,36 +1,17 @@
 const { EmbedBuilder } = require("discord.js");
+const { adminChannelId } = require("../channelId.json");
 
-class AdminView {
-  constructor(msg) {
-    this.msg = msg;
-  }
+exports.sendEmbededMsg = async (msg, content) => {
+  const embed = new EmbedBuilder()
+    .setColor(0xf14966)
+    .setTitle("ADMIN")
+    .setFooter({
+      text: "administrator command",
+      iconURL: "https://imgur.com/ARl3roS.png",
+    })
+    .setDescription(content);
 
-  async sendEmbededMsg(userName, userRole) {
-    const embed = new EmbedBuilder()
-      .setColor(0xf14966)
-      .setTitle("ADMIN")
-      .setFooter({
-        text: "administrator command",
-        iconURL: "https://imgur.com/ARl3roS.png",
-      })
-      .setDescription(
-        `
-        this msg only send to admin.
-        `
-      )
-      .addFields(
-        {
-          name: "**User Name**",
-          value: userName,
-        },
-        {
-          name: "**User Role**",
-          value: userRole,
-        }
-      );
+  const r_channel = msg.client.channels.cache.get(adminChannelId);
 
-    await this.msg.reply({ embeds: [embed], ephemeral: true });
-  }
-}
-
-module.exports = AdminView;
+  await r_channel.send({ embeds: [embed], ephemeral: true });
+};

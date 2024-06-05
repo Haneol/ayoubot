@@ -46,6 +46,23 @@ exports.getUserByName = async (userName) => {
   }
 };
 
+// 특정 역할로 사용자 조회
+exports.getAllUsersByRole = async (roleName) => {
+  try {
+    const users = await User.findAll({
+      include: [
+        {
+          model: Role,
+          where: { roleName },
+        },
+      ],
+    });
+    return users;
+  } catch (error) {
+    throw new Error("사용자 조회에 실패했습니다. (" + error + ")");
+  }
+};
+
 // 사용자 정보 업데이트
 exports.updateUser = async (userID, userName, roleID) => {
   try {

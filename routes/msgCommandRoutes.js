@@ -14,9 +14,33 @@ class MsgCommandRoutes extends CommandRoutes {
       await authenticateUser(msg, async () => {
         const user = await userRepository.getUserById(msg.ayouUser);
         if (user.Role.roleName === "ADMIN") {
-          const prompt = msg.content.slice(2).trim().replace(/\s/g, "");
-          if (prompt == "help") {
+          const prompt = msg.content
+            .slice(2)
+            .trim()
+            .replace(/\s/g, " ")
+            .split(" ");
+          if (prompt[0] == "help") {
             this._findRoutes(msg, "admin_help");
+          } else if (prompt[0] == "user") {
+            if (prompt[1] == "list") {
+              if (!prompt[2]) {
+                this._findRoutes(msg, "admin_all_user_get");
+              } else {
+                msg.argsRole = prompt[2];
+                this._findRoutes(msg, "admin_user_by_role_get");
+              }
+            } else if (prompt[1]) {
+              msg.argsId = prompt[1];
+              this._findRoutes(msg, "admin_user_by_id_get");
+            }
+          } else if (prompt[0] == "set") {
+            msg.argsId = prompt[1];
+            msg.argsCountList = [prompt[2], prompt[3], prompt[4]];
+            this._findRoutes(msg, "admin_set_user");
+          } else if (prompt[0] == "role") {
+            msg.argsId = prompt[1];
+            msg.argsRole = prompt[2];
+            this._findRoutes(msg, "admin_set_user_role");
           }
         }
       });
