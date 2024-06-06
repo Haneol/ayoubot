@@ -5,17 +5,20 @@ const { adminId } = require("../config.json");
 const { guildId } = require("../channelId.json");
 
 async function retryDatabaseOperation(operation, retries = 3, delay = 1000) {
+  let lastError;
   for (let i = 0; i < retries; i++) {
     try {
       return await operation();
     } catch (error) {
-      if (error.message.includes("SQLITE_BUSY") && i < retries - 1) {
+      lastError = error;
+      if (error.message.includes("SQLITE_BUSY")) {
         await new Promise((resolve) => setTimeout(resolve, delay));
       } else {
-        throw error;
+        break;
       }
     }
   }
+  throw lastError;
 }
 
 const sequelize = new Sequelize({
@@ -77,9 +80,9 @@ const initializeDatabase = async (client) => {
     logger.info(`Fetched ${members.size} members.`);
 
     // Process members
-    await Promise.all(
-      members.map(async (member) => {
-        if (member.user.bot) return;
+    for (const member of members.values()) {
+      if (member.user.bot) continue;
+      try {
         await retryDatabaseOperation(async () => {
           const [user, created] = await User.findOrCreate({
             where: { userName: member.id },
@@ -91,8 +94,13 @@ const initializeDatabase = async (client) => {
             logger.info(`Existing user: ${member.user.username}`);
           }
         });
-      })
-    );
+        await new Promise((resolve) => setTimeout(resolve, 100)); // 100ms delay between each user
+      } catch (error) {
+        logger.error(
+          `Error processing user ${member.user.username}: ${error.message}`
+        );
+      }
+    }
     logger.info("All members processed.");
   } catch (error) {
     logger.error(`Error during database initialization: ${error.message}`);
