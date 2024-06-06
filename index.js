@@ -12,6 +12,7 @@ const SelectMenuInteractionEvent = require("./events/selectMenuInteractionEvent"
 const VoiceStateUpdateInteractionEvent = require("./events/voiceStateUpdateInteractionEvent");
 const todayController = require("./controllers/todayController");
 const helpController = require("./controllers/helpController");
+const userController = require("./controllers/userController");
 const { channels } = require("./controllers/channelController");
 
 const client = new Client({
@@ -49,6 +50,17 @@ client.once(Events.ClientReady, async (readyClient) => {
     "0 8 * * *",
     () => {
       todayController.run(client);
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Seoul",
+    }
+  );
+
+  cron.schedule(
+    "0 8 1 * *",
+    () => {
+      userController.run(client);
     },
     {
       scheduled: true,
