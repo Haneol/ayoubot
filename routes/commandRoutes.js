@@ -1,8 +1,8 @@
-const helpController = require("../controllers/helpController");
 const adminController = require("../controllers/adminController");
 const colorController = require("../controllers/colorController");
 const gameController = require("../controllers/gameController");
 const channelController = require("../controllers/channelController");
+const chatController = require("../controllers/chatController");
 
 // Abstract Class
 class CommandRoutes {
@@ -81,6 +81,16 @@ class CommandRoutes {
       case "change_role":
         console.log(`유저 ${msg.author.username} : 게임 역할 변경`);
         gameController.run(msg);
+        break;
+
+      case "check_chat_with_ayou":
+        console.log(`유저 ${msg.author.username} : 아유봇과 채팅 횟수`);
+        chatController.getUsersCount(msg);
+        break;
+
+      case "chat_with_ayou":
+        console.log(`유저 ${msg.author.username} : 아유봇과 채팅`);
+        chatController.run(msg);
         break;
     }
   }

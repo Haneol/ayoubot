@@ -1,6 +1,4 @@
-const fs = require("fs");
 const CommandRoutes = require("./commandRoutes");
-const { askClaude } = require("../utils/claudeUtil");
 const { authenticateUser } = require("../middlewares/userMiddleware");
 const userRepository = require("../repositories/userRepository");
 
@@ -102,63 +100,28 @@ class MsgCommandRoutes extends CommandRoutes {
           cmd == "겜설정변경"
         ) {
           this._findRoutes(msg, "change_role");
-        } else if (/^(?=.*[가-힣]).{2,}$/.test(cmd)) {
-          // 명령어가 없을 경우 클로드 이용
-          // 한글 1자 이상, 전체 문장 2자 이상 포함될 경우 실행
-
-          // chatPrompt.txt 파일 읽기
-          const systemPrompt = fs.readFileSync(
-            "prompts/chatPrompt.txt",
-            "utf-8"
-          );
-
-          askClaude(systemPrompt, prompt.replace(/[ㄱ-ㅎㅏ-ㅣᴥ]/g, ""))
-            .then((response) => {
-              this.#requestClaude(msg, response);
-            })
-            .catch((error) => {
-              console.error("Error: ", error);
-            });
+        } else if (
+          cmd == "아유" ||
+          cmd == "채팅" ||
+          cmd == "챗" ||
+          cmd == "대화" ||
+          cmd == "아유채팅" ||
+          cmd == "아유챗" ||
+          cmd == "아유대화" ||
+          cmd == "아유야"
+        ) {
+          this._findRoutes(msg, "check_chat_with_ayou");
         }
       });
-    }
-  }
-
-  // Using Claude
-  #requestClaude(msg, response) {
-    if (response.includes("ayou-q:")) {
-      if (response.includes("ayou-q:0")) {
-        // 아유 서버의 규칙과 관련됨
-        this._findRoutes(msg, "rule");
-      } else if (response.includes("ayou-q:10")) {
-        // 채널 생성과 관련됨
-        this._findRoutes(msg, "channel");
-      } else if (response.includes("ayou-q:11")) {
-        // 채널 생성 요청
-        this._findRoutes(msg, "create_channel");
-      } else if (response.includes("ayou-q:20")) {
-        // 비밀 채널 생성과 관련됨
-        this._findRoutes(msg, "private_channel");
-      } else if (response.includes("ayou-q:21")) {
-        // 비밀 채널 생성 요청
-        this._findRoutes(msg, "create_private_channel");
-      } else if (response.includes("ayou-q:30")) {
-        // 모각공 채널과 관련됨
-        this._findRoutes(msg, "study_channel");
-      } else if (response.includes("ayou-q:40")) {
-        // 색상 변경
-        this._findRoutes(msg, "change_color");
-      } else if (response.includes("ayou-q:41")) {
-        // 게임 역할 변경
-        this._findRoutes(msg, "change_role");
-      } else if (response.includes("ayou-q:99")) {
-        // 아유 서버의 전체 기능을 요청
-        this._findRoutes(msg, "help");
-      } else {
-        console.log(`msgCommandRoutes Error: ${response}`);
-      }
-    } else {
-      msg.reply(response);
+    } else if (msg.content.startsWith("아유야 ")) {
+      // userMiddleware 사용
+      await authenticateUser(msg, async () => {
+        const prompt = msg.content.slice(4).trim();
+        if (prompt.length > 1) {
+          msg.argsPrompt = prompt;
+          this._findRoutes(msg, "chat_with_ayou");
+        }
+      });
     }
   }
 }
