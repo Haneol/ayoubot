@@ -87,6 +87,6 @@ function infoMsg(user) {
         `등급 : ${userRoleString.vvip}`,
       ];
     case "ADMIN":
-      return [`제한없이 즐기세요 : ${user.countColor}`, `등급 : ADMIN`];
+      return [`제한없이 즐기세요 : ${user.countChat}`, `등급 : ADMIN`];
   }
 }
