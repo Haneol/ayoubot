@@ -56,6 +56,20 @@ class MsgCommandRoutes extends CommandRoutes {
         const cmd = prompt.replace(/\s/g, "");
 
         if (
+          cmd == "help" ||
+          cmd == "도움말" ||
+          cmd == "도움" ||
+          cmd == "사용법" ||
+          cmd == "기능" ||
+          cmd == "헬프" ||
+          cmd == "헲" ||
+          cmd == "메뉴얼" ||
+          cmd == "가이드" ||
+          cmd == "매뉴얼"
+        ) {
+          this._findRoutes(msg, "help");
+        } else if (
+          cmd == "channel" ||
           cmd == "채널" ||
           cmd == "공개채널" ||
           cmd == "음성채널" ||
@@ -71,6 +85,7 @@ class MsgCommandRoutes extends CommandRoutes {
         ) {
           this._findRoutes(msg, "create_channel");
         } else if (
+          cmd == "color" ||
           cmd == "색변경" ||
           cmd == "색" ||
           cmd == "색상" ||
@@ -83,6 +98,7 @@ class MsgCommandRoutes extends CommandRoutes {
         ) {
           this._findRoutes(msg, "change_color");
         } else if (
+          cmd == "game" ||
           cmd == "게임역할변경" ||
           cmd == "게임역할" ||
           cmd == "게임" ||
@@ -101,6 +117,7 @@ class MsgCommandRoutes extends CommandRoutes {
         ) {
           this._findRoutes(msg, "change_role");
         } else if (
+          cmd == "ayou" ||
           cmd == "아유" ||
           cmd == "채팅" ||
           cmd == "챗" ||

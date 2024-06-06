@@ -3,6 +3,7 @@ const colorController = require("../controllers/colorController");
 const gameController = require("../controllers/gameController");
 const channelController = require("../controllers/channelController");
 const chatController = require("../controllers/chatController");
+const helpController = require("../controllers/helpController");
 
 // Abstract Class
 class CommandRoutes {
@@ -66,6 +67,11 @@ class CommandRoutes {
       case "admin_time_user_by_id":
         console.log(`유저 ${msg.author.username} : 어드민 Get user time by id`);
         adminController.getUserTimeById(msg);
+        break;
+
+      case "help":
+        console.log(`유저 ${msg.author.username} : 도움말`);
+        helpController.help(msg);
         break;
 
       case "create_channel":

@@ -11,3 +11,7 @@ exports.run = async (client) => {
 
   await helpView.sendEmbededMsg(r_channel);
 };
+
+exports.help = async (msg) => {
+  await helpView.sendHelpEmbededMsg(msg);
+};
