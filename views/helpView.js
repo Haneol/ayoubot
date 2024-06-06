@@ -5,6 +5,9 @@ const {
   ButtonStyle,
 } = require("discord.js");
 
+// 아유봇 버전 명시
+const ayouVersion = "v5.0.2";
+
 exports.sendEmbededMsg = async (channel) => {
   // 버튼 추가
   const button = [
@@ -54,7 +57,7 @@ exports.sendEmbededMsg = async (channel) => {
     })
     .setDescription(
       `
-        아유봇 v5.0.1
+        아유봇 ${ayouVersion}
         아유서버에 여러 편의 기능을 제공해줍니다.
 
         믫 또는 !!로 명령어를 실행할 수 있습니다. e.g. 믫 채널, !!채널
@@ -100,7 +103,7 @@ exports.sendHelpEmbededMsg = async (msg) => {
     })
     .setDescription(
       `
-        아유봇 v5.0.1
+        아유봇 ${ayouVersion}
         아유서버에 여러 편의 기능을 제공해줍니다.
 
         믫 또는 !!로 명령어를 실행할 수 있습니다. e.g. 믫 채널, !!채널
