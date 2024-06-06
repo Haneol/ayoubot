@@ -19,6 +19,7 @@ const { channels } = require("./controllers/channelController");
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildVoiceStates,
@@ -31,13 +32,11 @@ client.once(Events.ClientReady, async (readyClient) => {
     status: "online",
   });
 
-  const guild = await client.guilds.cache.first();
-
   try {
     await sequelize.authenticate();
     logger.info("Database connection has been established successfully.");
 
-    await initializeDatabase(guild);
+    await initializeDatabase(client);
     await sequelize.sync(); // Model & Database Sync
     logger.info("Database synced");
     await helpController.run(client);
@@ -50,7 +49,7 @@ client.once(Events.ClientReady, async (readyClient) => {
     // "*/5 * * * * *",
     "0 8 * * *",
     () => {
-      //todayController.run(client);
+      todayController.run(client);
       logger.cleanupOldLogFiles();
     },
     {
