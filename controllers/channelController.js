@@ -177,7 +177,7 @@ exports.managePrivateVoiceChannel = async (interaction) => {
     this.privateChannels[ownerId].members[member.id] = true;
   }
 
-  // 리스트에서 제거된 사용자의 역할 제거 및 privateChannels에서 제거
+  // 리스트에서 제거된 사용자의 권한 제거 및 privateChannels에서 제거
   const removedUserIds = Object.keys(
     this.privateChannels[ownerId].members
   ).filter((userId) => !selectedUserIds.includes(userId));
@@ -278,7 +278,7 @@ function isChannelCreated(chn, inputValue) {
 
 async function managePrivateChannel(interaction, channelName, channelId) {
   const guild = interaction.guild;
-  const members = await guild.members.list({ limit: 100 });
+  const members = await guild.members.fetch();
 
   const userOptions = members
     .filter(
