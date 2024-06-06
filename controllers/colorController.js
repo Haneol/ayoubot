@@ -1,3 +1,4 @@
+const logger = require("../utils/logger");
 const fs = require("fs");
 const colorView = require("../views/colorView");
 const { askClaude } = require("../utils/claudeUtil");
@@ -50,7 +51,7 @@ exports.changeColor = async (interaction) => {
         hexcode = response;
       })
       .catch((error) => {
-        console.error("Error: ", error);
+        logger.error("Error: ", error);
       });
   }
 
@@ -64,7 +65,7 @@ exports.changeColor = async (interaction) => {
       const user = await userRepository.getUserByName(interaction.member.id);
       await colorView.sendColorChangedEmbededMsg(interaction, hexcode, user);
     })
-    .catch(console.error);
+    .catch(logger.error);
 };
 
 exports.deleteColor = async (interaction) => {
@@ -73,5 +74,5 @@ exports.deleteColor = async (interaction) => {
     .find((role) => role.name === roleName)
     .setColor(0)
     .then(colorView.sendColorDeletedEmbededMsg(interaction))
-    .catch(console.error);
+    .catch(logger.error);
 };

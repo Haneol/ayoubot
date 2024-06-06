@@ -1,3 +1,4 @@
+const logger = require("../utils/logger");
 const fs = require("fs");
 const userRepository = require("../repositories/userRepository");
 const { askClaude } = require("../utils/claudeUtil");
@@ -19,7 +20,7 @@ exports.run = async (msg) => {
         if (error.message.includes("529")) {
           await chatView.sendChatFailedBecauseOfRateEmbededMsg(msg);
         } else {
-          console.error("Error: ", error);
+          logger.error("Error: ", error);
         }
       });
   } else {

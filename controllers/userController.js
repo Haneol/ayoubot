@@ -1,5 +1,6 @@
 const userRepository = require("../repositories/userRepository");
 const userView = require("../views/userView");
+const logger = require("../utils/logger");
 
 exports.run = async (client) => {
   const users = await userRepository.getAllUsers();
@@ -14,7 +15,7 @@ exports.run = async (client) => {
         await user.save();
       }
     } catch (error) {
-      console.error(`Failed to reset user counts:`, error);
+      logger.error(`Failed to reset user counts:`, error);
       let content = `유저 초기화 중 에러 발생\n${error}`;
       if (content.length > 4000) {
         content = content.slice(0, 3997);

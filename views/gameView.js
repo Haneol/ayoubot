@@ -24,7 +24,7 @@ exports.sendGameInfoEmbededMsg = async (msg) => {
   // 임베드 메시지 생성
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
-    .setTitle("게임 역할 변경")
+    .setTitle("🗡️ 게임 역할 변경")
     .setFooter({
       text: "그럴 수 있지",
       iconURL: "https://imgur.com/ARl3roS.png",
@@ -34,8 +34,7 @@ exports.sendGameInfoEmbededMsg = async (msg) => {
         게임 역할을 설정하거나, 또는 변경하려면 아래 버튼을 눌러주세요!
         하나 이상의 게임 역할이 설정된 경우 **게임 채널**을 볼 수 있습니다.
       `
-    )
-    .setThumbnail("https://i.imgur.com/Z2PqwEx.jpeg");
+    );
 
   await msg.reply({
     embeds: [embed],
@@ -49,7 +48,7 @@ exports.sendChangeGameEmbededMsg = async (interaction, buttons, flag) => {
   // 임베드 메시지 생성
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
-    .setTitle("게임 역할 변경")
+    .setTitle("🗡️ 게임 역할 변경")
     .setFooter({
       text: "그럴 수 있지",
       iconURL: "https://imgur.com/ARl3roS.png",
@@ -78,7 +77,7 @@ exports.sendChangeGameEmbededMsg = async (interaction, buttons, flag) => {
 exports.sendGameDeletedEmbededMsg = async (interaction) => {
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
-    .setTitle("게임 역할 초기화")
+    .setTitle("✅ 게임 역할 초기화")
     .setFooter({
       text: "그럴 수 있지",
       iconURL: "https://imgur.com/ARl3roS.png",

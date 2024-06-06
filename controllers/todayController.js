@@ -1,4 +1,5 @@
 const axios = require("axios");
+const logger = require("../utils/logger");
 const todayView = require("../views/todayView");
 const { openWeatherApiKey, newsID, newsSecret } = require("../config.json");
 const { todayChannelId } = require("../channelId.json");
@@ -67,7 +68,19 @@ exports.run = async (client) => {
     );
     const steamList = steamResponse.data.specials.items;
 
-    const sortedSpecials = steamList.sort((a, b) => {
+    // 이름을 기준으로 중복 제거
+    const uniqueSteamList = [];
+    const gameNames = new Set();
+
+    steamList.forEach((game) => {
+      if (!gameNames.has(game.name)) {
+        uniqueSteamList.push(game);
+        gameNames.add(game.name);
+      }
+    });
+
+    // 할인율 기준으로 정렬
+    const sortedSpecials = uniqueSteamList.sort((a, b) => {
       const discountA = 1 - a.final_price / a.original_price;
       const discountB = 1 - b.final_price / b.original_price;
       return discountB - discountA;
@@ -88,6 +101,6 @@ exports.run = async (client) => {
       sortedSpecials
     );
   } catch (error) {
-    console.error("오늘 할 일 cron 생성 도중 오류가 발생했습니다:", error);
+    logger.error("오늘 할 일 cron 생성 도중 오류가 발생했습니다:", error);
   }
 };

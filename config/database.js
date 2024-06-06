@@ -1,3 +1,4 @@
+const logger = require("../utils/logger");
 const { Sequelize } = require("sequelize");
 const path = require("path");
 const { adminId } = require("../config.json");
@@ -5,6 +6,9 @@ const { adminId } = require("../config.json");
 const sequelize = new Sequelize({
   dialect: "sqlite",
   storage: path.join(__dirname, "..", "database.sqlite"),
+  logging: (message) => {
+    logger.info(message);
+  },
 });
 
 const Role = require("../models/role")(sequelize);
@@ -52,9 +56,9 @@ const initializeDatabase = async (guild) => {
           defaults: { roleID: memberRole.roleID },
         });
         if (created) {
-          console.log(`신규 유저: ${member.user.username} 추가 완료`);
+          logger.info(`신규 유저: ${member.user.username} 추가 완료`);
         } else {
-          console.log(`기존 유저: ${member.user.username} 이미 존재`);
+          logger.info(`기존 유저: ${member.user.username} 이미 존재`);
         }
       })
   );

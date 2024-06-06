@@ -1,3 +1,4 @@
+const logger = require("../utils/logger");
 const { ChannelType, PermissionFlagsBits } = require("discord.js");
 const channelView = require("../views/channelView");
 const { voiceChannelCategoryId } = require("../channelId.json");
@@ -46,7 +47,7 @@ exports.createPrivateChannelRequest = async (interaction) => {
       clearTimeout(this.channels[channelName].deleteTimer);
       delete this.channels[channelName].deleteTimer;
       delete this.channels[channelName];
-      console.log(channelName + " 삭제되었습니다.");
+      logger.info(channelName + " 삭제되었습니다.");
     }
     await channelView.sendCreatePrivateChannelEmbededMsg(interaction, user);
   }
@@ -216,7 +217,7 @@ async function createVoiceChannel(guild, channelName) {
     });
     return true;
   } catch (error) {
-    console.error("음성 채널 생성 중 오류 발생:", error);
+    logger.error("음성 채널 생성 중 오류 발생:", error);
     return false;
   }
 }
@@ -251,7 +252,7 @@ async function createPrivateVoiceChannel(guild, userId, newChannelName) {
     });
     return true;
   } catch (error) {
-    console.error("음성 채널 생성 중 오류 발생:", error);
+    logger.error("음성 채널 생성 중 오류 발생:", error);
     return false;
   }
 }

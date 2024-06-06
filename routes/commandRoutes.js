@@ -4,6 +4,7 @@ const gameController = require("../controllers/gameController");
 const channelController = require("../controllers/channelController");
 const chatController = require("../controllers/chatController");
 const helpController = require("../controllers/helpController");
+const logger = require("../utils/logger");
 
 // Abstract Class
 class CommandRoutes {
@@ -30,72 +31,72 @@ class CommandRoutes {
   _findRoutes(msg, name) {
     switch (name) {
       case "admin_help":
-        console.log(`유저 ${msg.author.username} : 어드민 도움말`);
+        logger.info(`유저 ${msg.author.username} : 어드민 도움말`);
         adminController.help(msg);
         break;
 
       case "admin_all_user_get":
-        console.log(`유저 ${msg.author.username} : 어드민 Get all user`);
+        logger.info(`유저 ${msg.author.username} : 어드민 Get all user`);
         adminController.userList(msg);
         break;
 
       case "admin_user_by_role_get":
-        console.log(`유저 ${msg.author.username} : 어드민 Get user by role`);
+        logger.info(`유저 ${msg.author.username} : 어드민 Get user by role`);
         adminController.userListByRole(msg);
         break;
 
       case "admin_user_by_id_get":
-        console.log(`유저 ${msg.author.username} : 어드민 Get user by id`);
+        logger.info(`유저 ${msg.author.username} : 어드민 Get user by id`);
         adminController.userById(msg);
         break;
 
       case "admin_set_user":
-        console.log(`유저 ${msg.author.username} : 어드민 Set user`);
+        logger.info(`유저 ${msg.author.username} : 어드민 Set user`);
         adminController.setUserCount(msg);
         break;
 
       case "admin_set_user_role":
-        console.log(`유저 ${msg.author.username} : 어드민 Set user role`);
+        logger.info(`유저 ${msg.author.username} : 어드민 Set user role`);
         adminController.setUserRole(msg);
         break;
 
       case "admin_time_all_user":
-        console.log(`유저 ${msg.author.username} : 어드민 Get all user time`);
+        logger.info(`유저 ${msg.author.username} : 어드민 Get all user time`);
         adminController.getUserTimeList(msg);
         break;
 
       case "admin_time_user_by_id":
-        console.log(`유저 ${msg.author.username} : 어드민 Get user time by id`);
+        logger.info(`유저 ${msg.author.username} : 어드민 Get user time by id`);
         adminController.getUserTimeById(msg);
         break;
 
       case "help":
-        console.log(`유저 ${msg.author.username} : 도움말`);
+        logger.info(`유저 ${msg.author.username} : 도움말`);
         helpController.help(msg);
         break;
 
       case "create_channel":
-        console.log(`유저 ${msg.author.username} : 채널 생성`);
+        logger.info(`유저 ${msg.author.username} : 채널 생성`);
         channelController.run(msg);
         break;
 
       case "change_color":
-        console.log(`유저 ${msg.author.username} : 색 변경`);
+        logger.info(`유저 ${msg.author.username} : 색 변경`);
         colorController.run(msg);
         break;
 
       case "change_role":
-        console.log(`유저 ${msg.author.username} : 게임 역할 변경`);
+        logger.info(`유저 ${msg.author.username} : 게임 역할 변경`);
         gameController.run(msg);
         break;
 
       case "check_chat_with_ayou":
-        console.log(`유저 ${msg.author.username} : 아유봇과 채팅 횟수`);
+        logger.info(`유저 ${msg.author.username} : 아유봇과 채팅 횟수`);
         chatController.getUsersCount(msg);
         break;
 
       case "chat_with_ayou":
-        console.log(`유저 ${msg.author.username} : 아유봇과 채팅`);
+        logger.info(`유저 ${msg.author.username} : 아유봇과 채팅`);
         chatController.run(msg);
         break;
     }

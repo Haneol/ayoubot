@@ -19,7 +19,11 @@ exports.sendTodayEmbededMsg = async (
 
   let newsMessage = "";
   newsList.forEach((news) => {
-    newsMessage += `- [${news.title}](${news.link})\n`;
+    let title = news.title
+      .replace(/&quot;/g, '"')
+      .replace(/<b>/g, "**")
+      .replace(/<\/b>/g, "**");
+    newsMessage += `- [${title}](${news.link})\n`;
   });
 
   let steamMessage = "";
@@ -68,7 +72,7 @@ exports.sendTodayEmbededMsg = async (
         value: steamMessage,
       }
     )
-    .setThumbnail(sortedSpecials[0].header_image);
+    .setImage(sortedSpecials[0].header_image);
 
   await channel.send({
     embeds: [embed],

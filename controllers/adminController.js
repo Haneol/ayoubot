@@ -1,3 +1,4 @@
+const logger = require("../utils/logger");
 const adminView = require("../views/adminView");
 const userRepository = require("../repositories/userRepository");
 const roleRepository = require("../repositories/roleRepository");
@@ -32,7 +33,7 @@ exports.userList = async (msg) => {
         break;
       }
     } catch (error) {
-      console.error(`Failed to fetch user ${user.userName}:`, error);
+      logger.error(`Failed to fetch user ${user.userName}:`, error);
       const userInfo = `${user.userID} : (알 수 없는 사용자)(${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
       if (content.length + userInfo.length <= 4000) {
         content += userInfo;
@@ -64,7 +65,7 @@ exports.userListByRole = async (msg) => {
         break;
       }
     } catch (error) {
-      console.error(`Failed to fetch user ${user.userName}:`, error);
+      logger.error(`Failed to fetch user ${user.userName}:`, error);
       const userInfo = `${user.userID} : (알 수 없는 사용자)(${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
       if (content.length + userInfo.length <= 4000) {
         content += userInfo;
@@ -91,7 +92,7 @@ exports.userById = async (msg) => {
       const discordUser = await client.users.fetch(user.userName);
       content = `${user.userID} : ${discordUser.username}(${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
     } catch (error) {
-      console.error(`Failed to fetch user ${user.userName}:`, error);
+      logger.error(`Failed to fetch user ${user.userName}:`, error);
       content = `${user.userID} : (알 수 없는 사용자)(${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
     }
   } else {
@@ -125,7 +126,7 @@ exports.setUserCount = async (msg) => {
       await adminView.sendEmbededMsg(msg, `해당 사용자를 찾을 수 없습니다.`);
     }
   } catch (error) {
-    console.error(`Failed to update user counts:`, error);
+    logger.error(`Failed to update user counts:`, error);
     await adminView.sendEmbededMsg(msg, `사용자 정보 업데이트에 실패했습니다.`);
   }
 };
@@ -159,7 +160,7 @@ exports.setUserRole = async (msg) => {
       );
     }
   } catch (error) {
-    console.error(`Failed to update user role:`, error);
+    logger.error(`Failed to update user role:`, error);
     await adminView.sendEmbededMsg(msg, `사용자 역할 업데이트에 실패했습니다.`);
   }
 };
@@ -185,7 +186,7 @@ exports.getUserTimeList = async (msg) => {
         break;
       }
     } catch (error) {
-      console.error(`Failed to fetch user ${user.userName}:`, error);
+      logger.error(`Failed to fetch user ${user.userName}:`, error);
       const userInfo = `[알 수 없는 사용자]\n`;
       if (content.length + userInfo.length <= 4000) {
         content += userInfo;
@@ -217,7 +218,7 @@ exports.getUserTimeById = async (msg) => {
 
       content = `${discordUser.username}(${user.Role.roleName}) : ${hours}h ${minutes}m ${seconds}s\n`;
     } catch (error) {
-      console.error(`Failed to fetch user ${user.userName}:`, error);
+      logger.error(`Failed to fetch user ${user.userName}:`, error);
       content = `[알 수 없는 사용자]\n`;
     }
   } else {

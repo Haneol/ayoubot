@@ -2,6 +2,7 @@ const voiceTime = {};
 
 const { channels } = require("../controllers/channelController");
 const userRepository = require("../repositories/userRepository");
+const logger = require("../utils/logger");
 
 class VoiceStateUpdateInteractionEvent {
   constructor() {
@@ -27,7 +28,7 @@ class VoiceStateUpdateInteractionEvent {
         if (channels[channelName].deleteTimer) {
           clearTimeout(channels[channelName].deleteTimer);
           delete channels[channelName].deleteTimer;
-          console.log(channelName + " 삭제 예정 취소");
+          logger.info(channelName + " 삭제 예정 취소");
         }
       }
     } else if (oldState.channel && !newState.channel) {
@@ -53,11 +54,11 @@ class VoiceStateUpdateInteractionEvent {
           if (channels[channelName] && oldState.channel.members.size === 0) {
             await oldState.channel.delete();
             delete channels[channelName];
-            console.log(channelName + " 삭제되었습니다.");
+            logger.info(channelName + " 삭제되었습니다.");
           }
         }, 10000);
         channels[channelName].deleteTimer = deleteTimer;
-        console.log(channelName + " 삭제 예정 상태");
+        logger.info(channelName + " 삭제 예정 상태");
       }
     }
   }

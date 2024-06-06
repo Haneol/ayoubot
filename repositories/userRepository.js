@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 const { User, Role } = require("../config/database");
+const logger = require("../utils/logger");
 
 // 사용자 생성
 exports.createUser = async (discordUserId, roleID) => {
@@ -92,9 +93,9 @@ exports.updateConnectionTime = async (userId, time) => {
         where: { userName: userId },
       }
     );
-    console.log(`User ${userId} connectionTime updated successfully`);
+    logger.info(`User ${userId} connectionTime updated successfully`);
   } catch (error) {
-    console.error("Error updating connectionTime:", error);
+    logger.error("Error updating connectionTime:", error);
     throw error;
   }
 };
@@ -124,7 +125,7 @@ exports.incrementUserCountChat = async (userId) => {
     await User.increment("countChat", { by: 1, where: { userID: userId } });
     return true;
   } catch (error) {
-    console.error("Error incrementing user countChat:", error);
+    logger.error("Error incrementing user countChat:", error);
     return false;
   }
 };
@@ -161,7 +162,7 @@ exports.incrementUserCountChannel = async (userId) => {
     });
     return true;
   } catch (error) {
-    console.error("Error incrementing user countCreateChannel:", error);
+    logger.error("Error incrementing user countCreateChannel:", error);
     return false;
   }
 };
@@ -194,7 +195,7 @@ exports.incrementUserCountColor = async (userId) => {
     });
     return true;
   } catch (error) {
-    console.error("Error incrementing user countColor:", error);
+    logger.error("Error incrementing user countColor:", error);
     return false;
   }
 };

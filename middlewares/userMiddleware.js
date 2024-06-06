@@ -1,5 +1,6 @@
 const userRepository = require("../repositories/userRepository");
 const roleRepository = require("../repositories/roleRepository");
+const logger = require("../utils/logger");
 
 exports.authenticateUser = async (msg, next) => {
   try {
@@ -15,11 +16,11 @@ exports.authenticateUser = async (msg, next) => {
       if (defaultRole) {
         await userRepository.createUser(discordUserId, defaultRole.roleID);
         user = await userRepository.getUserByName(discordUserId);
-        console.log(
+        logger.info(
           `New user created: ${user.userName} (${user.Role.roleName})`
         );
       } else {
-        console.error(`Default role '${defaultRoleName}' not found.`);
+        logger.error(`Default role '${defaultRoleName}' not found.`);
         return msg.reply({
           content: "사용자 인증에 실패했습니다.",
           ephemeral: true,
@@ -53,7 +54,7 @@ exports.authenticateUser = async (msg, next) => {
     msg.ayouRole = role;
     next();
   } catch (error) {
-    console.error("Error authenticating user:", error);
+    logger.error("Error authenticating user:", error);
     msg.reply({ content: "사용자 인증에 실패했습니다.", ephemeral: true });
   }
 };
@@ -66,18 +67,18 @@ exports.authenticateUserWithInteraction = async (interaction, next) => {
 
     // 사용자가 없다면 사용자 생성
     if (!user) {
-      console.log("사용자 생성 중");
+      logger.info("사용자 생성 중");
       const defaultRoleName = "MEMBER";
       const defaultRole = await roleRepository.getRoleByName(defaultRoleName);
 
       if (defaultRole) {
         await userRepository.createUser(discordUserId, defaultRole.roleID);
         user = await userRepository.getUserByName(discordUserId);
-        console.log(
+        logger.info(
           `New user created: ${user.userName} (${user.Role.roleName})`
         );
       } else {
-        console.error(`Default role '${defaultRoleName}' not found.`);
+        logger.error(`Default role '${defaultRoleName}' not found.`);
         return interaction.reply({
           content: "사용자 인증에 실패했습니다.",
           ephemeral: true,
@@ -96,7 +97,7 @@ exports.authenticateUserWithInteraction = async (interaction, next) => {
 
     // 사용자 역할이 없다면 사용자 역할 생성
     if (!role) {
-      console.log("사용자 역할 생성 중");
+      logger.info("사용자 역할 생성 중");
       role = await interaction.guild.roles.create({
         name: roleName,
         permissions: [],
@@ -114,7 +115,7 @@ exports.authenticateUserWithInteraction = async (interaction, next) => {
     interaction.ayouRole = role;
     next();
   } catch (error) {
-    console.error("Error authenticating user:", error);
+    logger.error("Error authenticating user:", error);
     interaction.reply({
       content: "사용자 인증에 실패했습니다.",
       ephemeral: true,
