@@ -133,5 +133,5 @@ exports.sendHelpEmbededMsg = async (msg) => {
       }
     );
 
-  await msg.reply({ embeds: [embed] });
+  await msg.reply({ embeds: [embed], ephemeral: true });
 };

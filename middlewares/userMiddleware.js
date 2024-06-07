@@ -61,12 +61,12 @@ exports.authenticateUser = async (msg, next) => {
 
       // 사용자에게 역할 부여
       await msg.member.roles.add(role);
-    } else if (!interaction.member.roles.cache.has(role.id)) {
+    } else if (!msg.member.roles.cache.has(role.id)) {
       try {
         // 사용자에게 역할 부여
-        await interaction.member.roles.add(role);
+        await msg.member.roles.add(role);
         logger.info(
-          `역할 부여 완료: ${interaction.user.tag}에게 ${role.name} 역할 부여`
+          `역할 부여 완료: ${msg.user.tag}에게 ${role.name} 역할 부여`
         );
       } catch (error) {
         logger.error("역할 부여 중 오류 발생:", error);

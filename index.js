@@ -1,25 +1,27 @@
-const {
-  Client,
-  Events,
-  GatewayIntentBits,
-  ApplicationCommandType,
-  ContextMenuCommandBuilder,
-} = require("discord.js");
+const { Client, Events, GatewayIntentBits } = require("discord.js");
 const logger = require("./utils/logger");
 const { token } = require("./config.json");
 const cron = require("node-cron");
+
 const {
   authenticateUserWithInteraction,
 } = require("./middlewares/userMiddleware");
+
 const MsgCommandRoutes = require("./routes/msgCommandRoutes");
+const SlashCommandRoutes = require("./routes/slashCommandRoutes");
+
 const { sequelize, initializeDatabase } = require("./config/database");
+const slashCommandRegistration = require("./routes/slashCommandRegistration");
+
 const ButtonInteractionEvent = require("./events/buttonInteractionEvent");
 const ModalInteractionEvent = require("./events/modalInteractionEvent");
 const SelectMenuInteractionEvent = require("./events/selectMenuInteractionEvent");
 const VoiceStateUpdateInteractionEvent = require("./events/voiceStateUpdateInteractionEvent");
+
 const todayController = require("./controllers/todayController");
 const helpController = require("./controllers/helpController");
 const userController = require("./controllers/userController");
+
 const { channels } = require("./controllers/channelController");
 
 const client = new Client({
@@ -38,20 +40,7 @@ client.once(Events.ClientReady, async (readyClient) => {
     status: "online",
   });
 
-  try {
-    logger.info("Registering commands...");
-
-    // 컨텍스트 메뉴 명령어 등록
-    const contextMenuCommand = new ContextMenuCommandBuilder()
-      .setName("유저 초대")
-      .setType(ApplicationCommandType.User);
-
-    await client.application.commands.set([contextMenuCommand.toJSON()]);
-
-    logger.info("Commands registered successfully!");
-  } catch (error) {
-    logger.error("Error registering commands:", error);
-  }
+  await slashCommandRegistration.run(client);
 
   try {
     await sequelize.authenticate();
@@ -67,7 +56,6 @@ client.once(Events.ClientReady, async (readyClient) => {
   }
 
   cron.schedule(
-    // "*/5 * * * * *",
     "*/10 8-19 * * *",
     () => {
       todayController.run(client);
@@ -92,6 +80,7 @@ client.once(Events.ClientReady, async (readyClient) => {
 });
 
 const msgCommandRoutes = new MsgCommandRoutes();
+const slashCommandRoutes = new SlashCommandRoutes();
 const buttonInteractionEvent = new ButtonInteractionEvent();
 const modalInteractionEvent = new ModalInteractionEvent();
 const voiceStateUpdateEvent = new VoiceStateUpdateInteractionEvent();
@@ -116,6 +105,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
         await modalInteractionEvent.event(interaction);
       else if (interaction.isStringSelectMenu())
         await selectMenuInteractionEvent.event(interaction);
+      else if (interaction.isCommand())
+        await slashCommandRoutes.routes(interaction);
       else if (interaction.isUserContextMenuCommand()) {
         if (interaction.commandName === "유저 초대") {
           const user = interaction.targetUser;
