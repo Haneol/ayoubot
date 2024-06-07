@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 
 // 아유봇 버전 명시
-const ayouVersion = "v5.0.3";
+const ayouVersion = "v5.0.4";
 
 exports.sendEmbededMsg = async (channel) => {
   // 버튼 추가
