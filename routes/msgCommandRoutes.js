@@ -42,6 +42,8 @@ class MsgCommandRoutes extends CommandRoutes {
           } else if (prompt[0] == "time") {
             if (prompt[1] == "list") {
               this._findRoutes(msg, "admin_time_all_user");
+            } else if (prompt[1] == "reset") {
+              this._findRoutes(msg, "admin_time_reset");
             } else if (prompt[1]) {
               msg.argsId = prompt[1];
               this._findRoutes(msg, "admin_time_user_by_id");
@@ -97,6 +99,21 @@ class MsgCommandRoutes extends CommandRoutes {
           cmd == "색바꾸기"
         ) {
           this._findRoutes(msg, "change_color");
+        } else if (
+          cmd == "색확인" ||
+          cmd == "색보기" ||
+          cmd == "색상확인" ||
+          cmd == "색깔확인" ||
+          cmd == "색상보기" ||
+          cmd == "색깔확인" ||
+          cmd == "현재색" ||
+          cmd == "현재색깔" ||
+          cmd == "현재색상" ||
+          cmd == "지금색" ||
+          cmd == "지금색상" ||
+          cmd == "지금색깔"
+        ) {
+          this._findRoutes(msg, "get_color");
         } else if (
           cmd == "game" ||
           cmd == "게임역할변경" ||

@@ -43,11 +43,34 @@ exports.authenticateUser = async (msg, next) => {
       });
 
       // 우선순위 최상단 위치
-      const position = msg.guild.roles.highest.position;
-      await role.setPosition(position - 3);
+      const position = interaction.guild.roles.highest.position;
+      const newPosition = position - 3; // 새로운 위치 계산
+
+      if (newPosition >= 0) {
+        try {
+          await role.setPosition(newPosition);
+          logger.info(
+            `역할 위치가 변경되었습니다. 새로운 위치: ${newPosition}`
+          );
+        } catch (error) {
+          logger.error("역할 위치 변경 중 오류 발생:", error);
+        }
+      } else {
+        logger.info("유효하지 않은 역할 위치입니다.");
+      }
 
       // 사용자에게 역할 부여
       await msg.member.roles.add(role);
+    } else if (!msg.member.roles.cache.has(role.id)) {
+      try {
+        // 사용자에게 역할 부여
+        await msg.member.roles.add(role);
+        logger.info(
+          `역할 부여 완료: ${msg.user.tag}에게 ${role.name} 역할 부여`
+        );
+      } catch (error) {
+        logger.error("역할 부여 중 오류 발생:", error);
+      }
     }
 
     // 사용자 역할을 메시지 객체에 저장
@@ -105,10 +128,33 @@ exports.authenticateUserWithInteraction = async (interaction, next) => {
 
       // 우선순위 최상단 위치
       const position = interaction.guild.roles.highest.position;
-      await role.setPosition(position - 3);
+      const newPosition = position - 3; // 새로운 위치 계산
+
+      if (newPosition >= 0) {
+        try {
+          await role.setPosition(newPosition);
+          logger.info(
+            `역할 위치가 변경되었습니다. 새로운 위치: ${newPosition}`
+          );
+        } catch (error) {
+          logger.error("역할 위치 변경 중 오류 발생:", error);
+        }
+      } else {
+        logger.info("유효하지 않은 역할 위치입니다.");
+      }
 
       // 사용자에게 역할 부여
       await interaction.member.roles.add(role);
+    } else if (!interaction.member.roles.cache.has(role.id)) {
+      try {
+        // 사용자에게 역할 부여
+        await interaction.member.roles.add(role);
+        logger.info(
+          `역할 부여 완료: ${interaction.user.tag}에게 ${role.name} 역할 부여`
+        );
+      } catch (error) {
+        logger.error("역할 부여 중 오류 발생:", error);
+      }
     }
 
     // 사용자 역할을 메시지 객체에 저장

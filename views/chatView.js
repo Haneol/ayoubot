@@ -66,7 +66,7 @@ exports.sendChatCountEmbededMsg = async (msg, user) => {
       value: fieldValue,
     });
 
-  await msg.reply({ embeds: [embed] });
+  await msg.reply({ embeds: [embed], ephemeral: true });
 };
 
 function infoMsg(user) {

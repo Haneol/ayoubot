@@ -11,6 +11,18 @@ exports.run = async (msg) => {
   await colorView.sendCurrentColorEmbededMsg(msg, role.color);
 };
 
+exports.showCurrentColor = async (interaction) => {
+  const roleName = interaction.member.user.username;
+  let role = interaction.guild.roles.cache.find(
+    (role) => role.name === roleName
+  );
+
+  await colorView.sendCurrentColorWithoutButtonEmbededMsg(
+    interaction,
+    role.color
+  );
+};
+
 exports.changeColorRequest = async (interaction) => {
   const user = await userRepository.getUserByName(interaction.member.id);
 

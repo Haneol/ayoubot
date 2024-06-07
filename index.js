@@ -2,18 +2,27 @@ const { Client, Events, GatewayIntentBits } = require("discord.js");
 const logger = require("./utils/logger");
 const { token } = require("./config.json");
 const cron = require("node-cron");
+
 const {
   authenticateUserWithInteraction,
 } = require("./middlewares/userMiddleware");
+
 const MsgCommandRoutes = require("./routes/msgCommandRoutes");
+const SlashCommandRoutes = require("./routes/slashCommandRoutes");
+
 const { sequelize, initializeDatabase } = require("./config/database");
+const slashCommandRegistration = require("./routes/slashCommandRegistration");
+
 const ButtonInteractionEvent = require("./events/buttonInteractionEvent");
 const ModalInteractionEvent = require("./events/modalInteractionEvent");
+const UserContextMenuCommandEvent = require("./events/userContextMenuCommandEvent");
 const SelectMenuInteractionEvent = require("./events/selectMenuInteractionEvent");
 const VoiceStateUpdateInteractionEvent = require("./events/voiceStateUpdateInteractionEvent");
+
 const todayController = require("./controllers/todayController");
 const helpController = require("./controllers/helpController");
 const userController = require("./controllers/userController");
+
 const { channels } = require("./controllers/channelController");
 
 const client = new Client({
@@ -32,6 +41,8 @@ client.once(Events.ClientReady, async (readyClient) => {
     status: "online",
   });
 
+  await slashCommandRegistration.run(client);
+
   try {
     await sequelize.authenticate();
     logger.info("Database connection has been established successfully.");
@@ -46,7 +57,6 @@ client.once(Events.ClientReady, async (readyClient) => {
   }
 
   cron.schedule(
-    // "*/5 * * * * *",
     "*/10 8-19 * * *",
     () => {
       todayController.run(client);
@@ -71,7 +81,9 @@ client.once(Events.ClientReady, async (readyClient) => {
 });
 
 const msgCommandRoutes = new MsgCommandRoutes();
+const slashCommandRoutes = new SlashCommandRoutes();
 const buttonInteractionEvent = new ButtonInteractionEvent();
+const userContextMenuCommandEvent = new UserContextMenuCommandEvent();
 const modalInteractionEvent = new ModalInteractionEvent();
 const voiceStateUpdateEvent = new VoiceStateUpdateInteractionEvent();
 const selectMenuInteractionEvent = new SelectMenuInteractionEvent();
@@ -95,6 +107,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
         await modalInteractionEvent.event(interaction);
       else if (interaction.isStringSelectMenu())
         await selectMenuInteractionEvent.event(interaction);
+      else if (interaction.isChatInputCommand())
+        await slashCommandRoutes.routes(interaction);
+      else if (interaction.isUserContextMenuCommand())
+        await userContextMenuCommandEvent.event(interaction);
     } catch (error) {
       logger.error("Error handling interaction:", error);
     }

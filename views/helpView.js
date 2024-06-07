@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 
 // 아유봇 버전 명시
-const ayouVersion = "v5.0.4";
+const ayouVersion = "v5.1.0";
 
 exports.sendEmbededMsg = async (channel) => {
   // 버튼 추가
@@ -133,5 +133,5 @@ exports.sendHelpEmbededMsg = async (msg) => {
       }
     );
 
-  await msg.reply({ embeds: [embed] });
+  await msg.reply({ embeds: [embed], ephemeral: true });
 };

@@ -179,6 +179,77 @@ exports.sendColorFailedBecauseOfCountEmbededMsg = async (interaction, user) => {
   });
 };
 
+exports.sendCurrentColorWithoutButtonEmbededMsg = async (
+  interaction,
+  color
+) => {
+  // 임베드 메시지 생성
+  if (color != 0) {
+    color = "#" + color.toString(16).padStart(6, "0");
+
+    const colorImage = await createColorImage(color);
+
+    const embed = new EmbedBuilder()
+      .setColor(0xf14966)
+      .setTitle("💜 색상 변경")
+      .setFooter({
+        text: "그럴 수 있지",
+        iconURL: "https://imgur.com/ARl3roS.png",
+      })
+      .setDescription(
+        `
+        현재 색상은 **${color}**입니다.
+        색상 변경을 하려면 /색변경 명령어를 사용하고 색을 입력해주세요!
+        입력 방법은 다음과 같습니다.
+            `
+      )
+      .addFields(
+        {
+          name: "Hex 코드",
+          value: "#FF0000과 같이 입력",
+        },
+        {
+          name: "색 입력",
+          value: "'빨간색'과 같이 입력. 또는 '여름바다'와 같이 추상적으로 입력",
+        }
+      )
+      .setThumbnail("attachment://color.png");
+
+    await interaction.reply({
+      embeds: [embed],
+      files: [colorImage],
+      ephemeral: true,
+    });
+  } else {
+    const embed = new EmbedBuilder()
+      .setColor(0xf14966)
+      .setTitle("💜 색상 변경")
+      .setFooter({
+        text: "그럴 수 있지",
+        iconURL: "https://imgur.com/ARl3roS.png",
+      })
+      .setDescription(
+        `
+        현재 색상이 존재하지 않습니다.
+        색상 변경을 하려면 /색변경 명령어를 사용하고 색을 입력해주세요!
+        입력 방법은 다음과 같습니다.
+        `
+      )
+      .addFields(
+        {
+          name: "Hex 코드",
+          value: "#FF0000과 같이 입력",
+        },
+        {
+          name: "색 입력",
+          value: "'빨간색'과 같이 입력. 또는 '여름바다'와 같이 추상적으로 입력",
+        }
+      );
+
+    await interaction.reply({ embeds: [embed], ephemeral: true });
+  }
+};
+
 function infoMsg(user) {
   switch (user.Role.roleName) {
     case "MEMBER":
@@ -198,6 +269,5 @@ function infoMsg(user) {
       ];
     case "ADMIN":
       return [`제한없이 즐기세요 : ${user.countColor}`, `등급 : ADMIN`];
-      break;
   }
 }

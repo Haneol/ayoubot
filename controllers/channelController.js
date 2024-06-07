@@ -155,57 +155,49 @@ exports.createPrivateChannel = async (interaction) => {
 };
 
 exports.managePrivateVoiceChannel = async (interaction) => {
-  const selectedUserIds = interaction.values;
-  const ownerId = interaction.member.id;
-  const channelId = this.privateChannels[ownerId].id;
+  const member = interaction.targetMember;
+  const owner = interaction.user;
+  const ownerChannel = this.privateChannels[owner.id];
 
-  // 새로 추가된 사용자에게 역할 부여 및 privateChannels에 추가
-  const addedUserIds = selectedUserIds.filter(
-    (userId) => !this.privateChannels[ownerId].members[userId]
-  );
-  const addedMembers = await Promise.all(
-    addedUserIds.map((userId) => interaction.guild.members.fetch(userId))
-  );
+  if (ownerChannel) {
+    if (member.id === owner.id) {
+      await channelView.sendPrivateChannelManageFailedEmbededMsg(
+        interaction,
+        "본인은 초대할 수 없습니다!"
+      );
+    } else {
+      const channelId = ownerChannel.id;
+      const channel = interaction.guild.channels.cache.get(channelId);
 
-  for (const member of addedMembers) {
-    await interaction.guild.channels.cache
-      .get(channelId)
-      .permissionOverwrites.create(member, {
-        ViewChannel: true,
-        Connect: true,
-      });
-    this.privateChannels[ownerId].members[member.id] = true;
+      if (
+        member
+          .permissionsIn(channelId)
+          .has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect])
+      ) {
+        // 유저가 이미 권한이 있다면 -> 체크 해제
+        // 리스트에서 제거된 사용자의 권한 제거 및 privateChannels에서 제거
+        await channel.permissionOverwrites.delete(member);
+
+        delete this.privateChannels[owner.id].members[member.id];
+      } else {
+        // 유저가 권한이 없다면 -> 체크
+        // 새로 추가된 사용자에게 역할 부여 및 privateChannels에 추가
+        await channel.permissionOverwrites.create(member, {
+          ViewChannel: true,
+          Connect: true,
+        });
+
+        this.privateChannels[owner.id].members[member.id] = true;
+      }
+
+      await managePrivateChannel(interaction, channel.name, channelId);
+    }
+  } else {
+    await channelView.sendPrivateChannelManageFailedEmbededMsg(
+      interaction,
+      "비밀채널이 없습니다. 먼저 비밀 채널을 생성해주세요!"
+    );
   }
-
-  // 리스트에서 제거된 사용자의 권한 제거 및 privateChannels에서 제거
-  const removedUserIds = Object.keys(
-    this.privateChannels[ownerId].members
-  ).filter((userId) => !selectedUserIds.includes(userId));
-  const removedMembers = await Promise.all(
-    removedUserIds.map((userId) => interaction.guild.members.fetch(userId))
-  );
-  for (const member of removedMembers) {
-    await interaction.guild.channels.cache
-      .get(channelId)
-      .permissionOverwrites.delete(member);
-    delete this.privateChannels[ownerId].members[member.id];
-  }
-
-  // 수정 된 userOptions 구현
-  const updatedUserOptions =
-    interaction.message.components[0].components[0].options.map((option) => {
-      const hasPermission =
-        this.privateChannels[ownerId]?.members[option.value];
-      return {
-        ...option,
-        default: hasPermission,
-      };
-    });
-
-  await channelView.sendPrivateChannelManageEmbededMsgUpdate(
-    interaction,
-    updatedUserOptions
-  );
 };
 
 async function createVoiceChannel(guild, channelName) {
@@ -280,28 +272,23 @@ async function managePrivateChannel(interaction, channelName, channelId) {
   const guild = interaction.guild;
   const members = await guild.members.fetch();
 
-  const userOptions = members
-    .filter(
-      (member) =>
-        !member.user.bot &&
-        member.id !== interaction.member.id &&
-        member.id !== adminId
-    )
-    .map((member) => {
-      const hasRole = member
+  const invitedUsers = members.filter(
+    (member) =>
+      !member.user.bot &&
+      member.id !== interaction.member.id &&
+      member.id !== adminId &&
+      member
         .permissionsIn(channelId)
-        .has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect]);
+        .has([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.Connect])
+  );
 
-      return {
-        label: `${member.user.globalName}(@${member.user.username})`,
-        value: member.id,
-        default: hasRole,
-      };
-    });
+  const invitedUserString = invitedUsers
+    .map((member) => `<@${member.user.id}>`)
+    .join(", ");
 
   await channelView.sendPrivateChannelManageEmbededMsg(
     interaction,
     channelName,
-    userOptions
+    invitedUserString
   );
 }
