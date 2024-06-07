@@ -223,21 +223,32 @@ exports.sendPrivateChannelCreateFailedBecauseOfCountEmbededMsg = async (
   });
 };
 
+exports.sendPrivateChannelManageFailedEmbededMsg = async (
+  interaction,
+  content
+) => {
+  // 임베드 메시지 생성
+  const embed = new EmbedBuilder()
+    .setColor(0xf14966)
+    .setTitle("🚫 비밀채널 관리 실패")
+    .setFooter({
+      text: "그럴 수 있지",
+      iconURL: "https://imgur.com/ARl3roS.png",
+    })
+    .setDescription(content);
+
+  await interaction.reply({
+    embeds: [embed],
+    ephemeral: true,
+  });
+};
+
 exports.sendPrivateChannelManageEmbededMsg = async (
   interaction,
   newChannelName,
-  userOptions
+  content
 ) => {
-  // SelectMenu 생성
-  const select = new StringSelectMenuBuilder()
-    .setCustomId("channel_invite_user_select")
-    .setPlaceholder("유저 선택")
-    .addOptions(userOptions)
-    .setMinValues(0)
-    .setMaxValues(Math.min(userOptions.length, 5));
-
-  const row = new ActionRowBuilder().addComponents(select);
-
+  if (!content) content = "초대된 유저가 없어요!";
   // 임베드 메시지 생성
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
@@ -247,30 +258,22 @@ exports.sendPrivateChannelManageEmbededMsg = async (
       iconURL: "https://imgur.com/ARl3roS.png",
     })
     .setDescription(
-      `해당 채널에 유저를 추가하거나 제외하려면\n아래 선택 바에서 유저를 체크/체크해제 해주세요!`
-    );
+      `
+      ## 해당 채널에 유저를 추가 또는 제외하기
+      1. 추가하려는 유저를 찾아 우클릭한 후
+      2. [앱] → [유저 초대]를 눌러주세요.
+      `
+    )
+    .addFields({
+      name: "현재 초대된 유저",
+      value: content,
+    })
+    .setImage("https://i.imgur.com/Bw92ol6.png");
 
   await interaction.reply({
     embeds: [embed],
-    components: [row],
     ephemeral: true,
   });
-};
-
-exports.sendPrivateChannelManageEmbededMsgUpdate = async (
-  interaction,
-  updatedUserOptions
-) => {
-  const updatedRow = new ActionRowBuilder().addComponents(
-    new StringSelectMenuBuilder()
-      .setCustomId("channel_invite_user_select")
-      .setPlaceholder("유저 선택")
-      .addOptions(updatedUserOptions)
-      .setMinValues(0)
-      .setMaxValues(Math.min(updatedUserOptions.length, 5))
-  );
-
-  await interaction.update({ components: [updatedRow] });
 };
 
 function infoMsg(user) {

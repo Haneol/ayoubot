@@ -15,6 +15,7 @@ const slashCommandRegistration = require("./routes/slashCommandRegistration");
 
 const ButtonInteractionEvent = require("./events/buttonInteractionEvent");
 const ModalInteractionEvent = require("./events/modalInteractionEvent");
+const UserContextMenuCommandEvent = require("./events/userContextMenuCommandEvent");
 const SelectMenuInteractionEvent = require("./events/selectMenuInteractionEvent");
 const VoiceStateUpdateInteractionEvent = require("./events/voiceStateUpdateInteractionEvent");
 
@@ -82,6 +83,7 @@ client.once(Events.ClientReady, async (readyClient) => {
 const msgCommandRoutes = new MsgCommandRoutes();
 const slashCommandRoutes = new SlashCommandRoutes();
 const buttonInteractionEvent = new ButtonInteractionEvent();
+const userContextMenuCommandEvent = new UserContextMenuCommandEvent();
 const modalInteractionEvent = new ModalInteractionEvent();
 const voiceStateUpdateEvent = new VoiceStateUpdateInteractionEvent();
 const selectMenuInteractionEvent = new SelectMenuInteractionEvent();
@@ -105,14 +107,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
         await modalInteractionEvent.event(interaction);
       else if (interaction.isStringSelectMenu())
         await selectMenuInteractionEvent.event(interaction);
-      else if (interaction.isCommand())
+      else if (interaction.isChatInputCommand())
         await slashCommandRoutes.routes(interaction);
-      else if (interaction.isUserContextMenuCommand()) {
-        if (interaction.commandName === "유저 초대") {
-          const user = interaction.targetUser;
-          await interaction.reply(`${user.username}`);
-        }
-      }
+      else if (interaction.isUserContextMenuCommand())
+        await userContextMenuCommandEvent.event(interaction);
     } catch (error) {
       logger.error("Error handling interaction:", error);
     }

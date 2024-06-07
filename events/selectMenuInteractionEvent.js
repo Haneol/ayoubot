@@ -8,11 +8,7 @@ class SelectMenuInteractionEvent {
     this.constructor.instance = this;
   }
 
-  async event(interaction) {
-    if (interaction.customId === "channel_invite_user_select") {
-      await channelController.managePrivateVoiceChannel(interaction);
-    }
-  }
+  async event(interaction) {}
 }
 
 module.exports = SelectMenuInteractionEvent;
