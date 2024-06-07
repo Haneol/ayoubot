@@ -87,7 +87,7 @@ exports.run = async (client) => {
 
       // 스팀 할인 품목
       const steamResponse = await axios.get(
-        "https://store.steampowered.com/api/featuredcategories"
+        "https://store.steampowered.com/api/featuredcategories?cc=kr"
       );
       const steamList = steamResponse.data.specials.items;
 

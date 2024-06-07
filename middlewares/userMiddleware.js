@@ -43,8 +43,21 @@ exports.authenticateUser = async (msg, next) => {
       });
 
       // 우선순위 최상단 위치
-      const position = msg.guild.roles.highest.position;
-      await role.setPosition(position - 3);
+      const position = interaction.guild.roles.highest.position;
+      const newPosition = position - 3; // 새로운 위치 계산
+
+      if (newPosition >= 0) {
+        try {
+          await role.setPosition(newPosition);
+          console.log(
+            `역할 위치가 변경되었습니다. 새로운 위치: ${newPosition}`
+          );
+        } catch (error) {
+          console.error("역할 위치 변경 중 오류 발생:", error);
+        }
+      } else {
+        console.log("유효하지 않은 역할 위치입니다.");
+      }
 
       // 사용자에게 역할 부여
       await msg.member.roles.add(role);
@@ -105,7 +118,20 @@ exports.authenticateUserWithInteraction = async (interaction, next) => {
 
       // 우선순위 최상단 위치
       const position = interaction.guild.roles.highest.position;
-      await role.setPosition(position - 3);
+      const newPosition = position - 3; // 새로운 위치 계산
+
+      if (newPosition >= 0) {
+        try {
+          await role.setPosition(newPosition);
+          console.log(
+            `역할 위치가 변경되었습니다. 새로운 위치: ${newPosition}`
+          );
+        } catch (error) {
+          console.error("역할 위치 변경 중 오류 발생:", error);
+        }
+      } else {
+        console.log("유효하지 않은 역할 위치입니다.");
+      }
 
       // 사용자에게 역할 부여
       await interaction.member.roles.add(role);

@@ -1,4 +1,10 @@
-const { Client, Events, GatewayIntentBits } = require("discord.js");
+const {
+  Client,
+  Events,
+  GatewayIntentBits,
+  ApplicationCommandType,
+  ContextMenuCommandBuilder,
+} = require("discord.js");
 const logger = require("./utils/logger");
 const { token } = require("./config.json");
 const cron = require("node-cron");
@@ -31,6 +37,21 @@ client.once(Events.ClientReady, async (readyClient) => {
     activities: [{ name: "그럴 수 있지..." }],
     status: "online",
   });
+
+  try {
+    logger.info("Registering commands...");
+
+    // 컨텍스트 메뉴 명령어 등록
+    const contextMenuCommand = new ContextMenuCommandBuilder()
+      .setName("유저 초대")
+      .setType(ApplicationCommandType.User);
+
+    await client.application.commands.set([contextMenuCommand.toJSON()]);
+
+    logger.info("Commands registered successfully!");
+  } catch (error) {
+    logger.error("Error registering commands:", error);
+  }
 
   try {
     await sequelize.authenticate();
@@ -95,6 +116,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
         await modalInteractionEvent.event(interaction);
       else if (interaction.isStringSelectMenu())
         await selectMenuInteractionEvent.event(interaction);
+      else if (interaction.isUserContextMenuCommand()) {
+        if (interaction.commandName === "유저 초대") {
+          const user = interaction.targetUser;
+          await interaction.reply(`${user.username}`);
+        }
+      }
     } catch (error) {
       logger.error("Error handling interaction:", error);
     }
