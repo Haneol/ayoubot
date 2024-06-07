@@ -28,17 +28,23 @@ exports.run = async (client) => {
     );
     const forecastData = response.data;
 
+	logger.info(forecastData);
+
     // OpenWeatherMap API 호출 - 대기 오염
     const pollutionResponse = await axios.get(
       `http://api.openweathermap.org/data/2.5/air_pollution?lat=37.5665&lon=126.9780&appid=${openWeatherApiKey}`
     );
     const pollutionData = pollutionResponse.data;
 
+	logger.info(pollutionData);
+
     // 오늘 날짜 구하기
     const formattedDate = `${year}-${month.padStart(2, "0")}-${date.padStart(
       2,
       "0"
     )}`;
+
+	  logger.info(formattedDate);
 
     // 오늘의 예측 데이터 필터링
     const forecastWeather = forecastData.list.filter((forecast) =>
@@ -62,11 +68,15 @@ exports.run = async (client) => {
     );
     const newsList = newsResponse.data.items;
 
+	logger.info(newsList);
+
     // 스팀 할인 품목
     const steamResponse = await axios.get(
       "https://store.steampowered.com/api/featuredcategories"
     );
     const steamList = steamResponse.data.specials.items;
+
+	logger.info(steamList);
 
     // 이름을 기준으로 중복 제거
     const uniqueSteamList = [];
