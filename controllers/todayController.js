@@ -30,10 +30,17 @@ exports.run = async (client) => {
   // 오늘 날짜의 메시지가 이미 있는지 확인
   const messages = await todayChannel.messages.fetch({ limit: 10 });
   const hasTodayMessage = messages.some((message) => {
-    return (
-      message.author.id === client.user.id &&
-      message.content.includes(`${year}년 ${month}월 ${date}일(`)
-    );
+    if (message.author.id === client.user.id) {
+      const embed = message.embeds[0];
+      if (
+        embed &&
+        embed.title &&
+        embed.title.includes(`${year}년 ${month}월 ${date}일(`)
+      ) {
+        return true;
+      }
+    }
+    return false;
   });
 
   if (!hasTodayMessage) {
