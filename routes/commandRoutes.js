@@ -70,6 +70,13 @@ class CommandRoutes {
         adminController.getUserTimeById(msg);
         break;
 
+      case "admin_time_reset":
+        logger.info(
+          `유저 ${msg.author.username} : 어드민 Reset all user's time`
+        );
+        adminController.resetUserTime(msg);
+        break;
+
       case "help":
         logger.info(`유저 ${msg.author.username} : 도움말`);
         helpController.help(msg);

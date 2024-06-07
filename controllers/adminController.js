@@ -13,6 +13,7 @@ exports.help = async (msg) => {
   //role <userID> [vvip, vip, member] : 역할 변경
   //time list : 유저 접속 시간 리스트 전체 보기
   //time <userID> : 특정 유저 접속 시간 보기
+  //time reset : 전체 유저 초기화
   `;
   adminView.sendEmbededMsg(msg, content);
 };
@@ -230,4 +231,27 @@ exports.getUserTimeById = async (msg) => {
   }
 
   await adminView.sendEmbededMsg(msg, content);
+};
+
+exports.resetUserTime = async (msg) => {
+  const users = await userRepository.getAllUsers();
+
+  for (const user of users) {
+    try {
+      if (user) {
+        user.connectionTime = 0;
+        await user.save();
+      }
+    } catch (error) {
+      logger.error("Failed to reset user time:", error);
+      let content = `유저 초기화 중 에러 발생\n${error}`;
+      if (content.length > 4000) {
+        content = content.slice(0, 3997);
+        content = content + "...";
+      }
+      await adminView.sendEmbededMsg(msg, content);
+    }
+  }
+
+  await adminView.sendEmbededMsg(msg, "유저 Time이 초기화 되었습니다.");
 };
