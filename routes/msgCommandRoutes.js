@@ -98,6 +98,21 @@ class MsgCommandRoutes extends CommandRoutes {
         ) {
           this._findRoutes(msg, "change_color");
         } else if (
+          cmd == "색확인" ||
+          cmd == "색보기" ||
+          cmd == "색상확인" ||
+          cmd == "색깔확인" ||
+          cmd == "색상보기" ||
+          cmd == "색깔확인" ||
+          cmd == "현재색" ||
+          cmd == "현재색깔" ||
+          cmd == "현재색상" ||
+          cmd == "지금색" ||
+          cmd == "지금색상" ||
+          cmd == "지금색깔"
+        ) {
+          this._findRoutes(msg, "get_color");
+        } else if (
           cmd == "game" ||
           cmd == "게임역할변경" ||
           cmd == "게임역할" ||

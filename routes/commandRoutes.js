@@ -80,6 +80,11 @@ class CommandRoutes {
         channelController.run(msg);
         break;
 
+      case "get_color":
+        logger.info(`유저 ${msg.author.username} : 색 확인`);
+        colorController.showCurrentColor(msg);
+        break;
+
       case "change_color":
         logger.info(`유저 ${msg.author.username} : 색 변경`);
         colorController.run(msg);
