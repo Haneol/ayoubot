@@ -22,8 +22,8 @@ function info(message) {
   writeLog("INFO", message);
 }
 
-function error(message) {
-  writeLog("ERROR", message);
+function error(message, error) {
+  writeLog("ERROR", message + " " + error);
 }
 
 function cleanupOldLogFiles() {

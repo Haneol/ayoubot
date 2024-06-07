@@ -49,18 +49,28 @@ exports.authenticateUser = async (msg, next) => {
       if (newPosition >= 0) {
         try {
           await role.setPosition(newPosition);
-          console.log(
+          logger.info(
             `역할 위치가 변경되었습니다. 새로운 위치: ${newPosition}`
           );
         } catch (error) {
-          console.error("역할 위치 변경 중 오류 발생:", error);
+          logger.error("역할 위치 변경 중 오류 발생:", error);
         }
       } else {
-        console.log("유효하지 않은 역할 위치입니다.");
+        logger.info("유효하지 않은 역할 위치입니다.");
       }
 
       // 사용자에게 역할 부여
       await msg.member.roles.add(role);
+    } else if (!interaction.member.roles.cache.has(role.id)) {
+      try {
+        // 사용자에게 역할 부여
+        await interaction.member.roles.add(role);
+        logger.info(
+          `역할 부여 완료: ${interaction.user.tag}에게 ${role.name} 역할 부여`
+        );
+      } catch (error) {
+        logger.error("역할 부여 중 오류 발생:", error);
+      }
     }
 
     // 사용자 역할을 메시지 객체에 저장
@@ -123,18 +133,28 @@ exports.authenticateUserWithInteraction = async (interaction, next) => {
       if (newPosition >= 0) {
         try {
           await role.setPosition(newPosition);
-          console.log(
+          logger.info(
             `역할 위치가 변경되었습니다. 새로운 위치: ${newPosition}`
           );
         } catch (error) {
-          console.error("역할 위치 변경 중 오류 발생:", error);
+          logger.error("역할 위치 변경 중 오류 발생:", error);
         }
       } else {
-        console.log("유효하지 않은 역할 위치입니다.");
+        logger.info("유효하지 않은 역할 위치입니다.");
       }
 
       // 사용자에게 역할 부여
       await interaction.member.roles.add(role);
+    } else if (!interaction.member.roles.cache.has(role.id)) {
+      try {
+        // 사용자에게 역할 부여
+        await interaction.member.roles.add(role);
+        logger.info(
+          `역할 부여 완료: ${interaction.user.tag}에게 ${role.name} 역할 부여`
+        );
+      } catch (error) {
+        logger.error("역할 부여 중 오류 발생:", error);
+      }
     }
 
     // 사용자 역할을 메시지 객체에 저장
