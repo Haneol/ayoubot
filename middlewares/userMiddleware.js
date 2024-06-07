@@ -43,7 +43,7 @@ exports.authenticateUser = async (msg, next) => {
       });
 
       // 우선순위 최상단 위치
-      const position = interaction.guild.roles.highest.position;
+      const position = msg.guild.roles.highest.position;
       const newPosition = position - 3; // 새로운 위치 계산
 
       if (newPosition >= 0) {
