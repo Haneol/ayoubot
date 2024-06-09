@@ -44,6 +44,11 @@ exports.run = async (client) => {
   });
 
   if (!hasTodayMessage) {
+    let forecastWeather;
+    let precipitation;
+    let pollutionData;
+    let newsList;
+    let sortedSpecials;
     try {
       // OpenWeatherMap API 호출
       const response = await axios.get(
@@ -51,29 +56,33 @@ exports.run = async (client) => {
       );
       const forecastData = response.data;
 
-      logger.info(forecastData);
-
       // OpenWeatherMap API 호출 - 대기 오염
       const pollutionResponse = await axios.get(
         `http://api.openweathermap.org/data/2.5/air_pollution?lat=37.5665&lon=126.9780&appid=${openWeatherApiKey}`
       );
-      const pollutionData = pollutionResponse.data;
-
-      logger.info(pollutionData);
+      pollutionData = pollutionResponse.data;
 
       // 오늘의 예측 데이터 필터링
-      const forecastWeather = forecastData.list.filter((forecast) =>
+      forecastWeather = forecastData.list.filter((forecast) =>
         forecast.dt_txt.startsWith(formattedDate)
       );
 
       // 오늘의 강수량 계산
-      const precipitation = forecastWeather.reduce((total, forecast) => {
+      precipitation = forecastWeather.reduce((total, forecast) => {
         return total + (forecast.rain ? forecast.rain["3h"] : 0);
       }, 0);
 
+      logger.info(
+        `weather: ${forecastWeather[0].weather[0].description}, rain: ${precipitation}, pollution: ${pollutionData.list[0].components.pm10}`
+      );
+    } catch (error) {
+      logger.error("todayController(weather) error: ", error);
+    }
+
+    try {
       // 오늘의 뉴스
-      const newsResponse = await axios.get(
-        "https://openapi.naver.com/v1/search/news.json?query=뉴스&display=5",
+      const headlineResponse = await axios.get(
+        "https://openapi.naver.com/v1/search/news.json?query=헤드라인&display=1&sort=sim",
         {
           headers: {
             "X-Naver-Client-Id": newsID,
@@ -81,17 +90,34 @@ exports.run = async (client) => {
           },
         }
       );
-      const newsList = newsResponse.data.items;
+      const headlineNews = headlineResponse.data.items[0];
 
-      logger.info(newsList);
+      // 일반 뉴스 가져오기
+      const newsResponse = await axios.get(
+        "https://openapi.naver.com/v1/search/news.json?query=뉴스&display=4",
+        {
+          headers: {
+            "X-Naver-Client-Id": newsID,
+            "X-Naver-Client-Secret": newsSecret,
+          },
+        }
+      );
+      newsList = newsResponse.data.items;
 
+      // 헤드라인 뉴스를 첫 번째 요소로 추가
+      newsList.unshift(headlineNews);
+
+      logger.info(`headline: ${newsList[0].title}, news: ${newsList[1].title}`);
+    } catch (error) {
+      logger.error("todayController(news) error: ", error);
+    }
+
+    try {
       // 스팀 할인 품목
       const steamResponse = await axios.get(
         "https://store.steampowered.com/api/featuredcategories?cc=kr"
       );
       const steamList = steamResponse.data.specials.items;
-
-      logger.info(steamList);
 
       // 이름을 기준으로 중복 제거
       const uniqueSteamList = [];
@@ -105,28 +131,30 @@ exports.run = async (client) => {
       });
 
       // 할인율 기준으로 정렬
-      const sortedSpecials = uniqueSteamList.sort((a, b) => {
+      sortedSpecials = uniqueSteamList.sort((a, b) => {
         const discountA = 1 - a.final_price / a.original_price;
         const discountB = 1 - b.final_price / b.original_price;
         return discountB - discountA;
       });
 
-      await todayView.sendTodayEmbededMsg(
-        todayChannel,
-        {
-          dayOfWeek: dayOfWeek.slice(0, 1),
-          month: month,
-          date: date,
-          year: year,
-        },
-        forecastWeather,
-        precipitation,
-        pollutionData,
-        newsList,
-        sortedSpecials
-      );
+      logger.info(`steam: ${sortedSpecials[0].name}`);
     } catch (error) {
-      logger.error("오늘 할 일 cron 생성 도중 오류가 발생했습니다:", error);
+      logger.error("todayController(steam) error: ", error);
     }
+
+    await todayView.sendTodayEmbededMsg(
+      todayChannel,
+      {
+        dayOfWeek: dayOfWeek.slice(0, 1),
+        month: month,
+        date: date,
+        year: year,
+      },
+      forecastWeather,
+      precipitation,
+      pollutionData,
+      newsList,
+      sortedSpecials
+    );
   }
 };
