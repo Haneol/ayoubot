@@ -95,6 +95,74 @@ exports.createChannel = async (interaction) => {
   }
 };
 
+exports.createChannelWithNoName = async (newState) => {
+  const channelName = isChannelCreatedBy(newState, this.channels);
+
+  if (channelName) {
+    // 유저가 생성한 채널이 존재한다면
+    const channel = newState.guild.channels.cache.find(
+      (channel) => channel.name === channelName
+    );
+
+    await newState.member.voice.setChannel(channel);
+  } else {
+    // 유저가 채널을 생성하지 않았다면
+    const channelNames = [
+      "믫",
+      "뛃",
+      "뷄",
+      "뉡",
+      "긝",
+      "릟",
+      "씏",
+      "쥜",
+      "췞",
+      "킔",
+      "틣",
+    ];
+    const availableNames = channelNames.filter(
+      (name) => !isChannelCreated(this.channels, name)
+    );
+
+    if (availableNames.length === 0) {
+      // 사용가능한 이름이 없다면 패스
+      const channel = newState.guild.channels.cache.find(
+        (channel) => channel.name === "믫"
+      );
+
+      await newState.member.voice.setChannel(channel);
+    } else {
+      const randomIndex = Math.floor(Math.random() * availableNames.length);
+      const selectedChannelName = availableNames[randomIndex];
+      const isCreated = await createVoiceChannel(
+        newState.guild,
+        selectedChannelName
+      );
+      // 사용가능하면 채널 생성
+      if (isCreated) {
+        const channel = newState.guild.channels.cache.find(
+          (channel) => channel.name === selectedChannelName
+        );
+
+        this.channels[selectedChannelName] = {
+          id: channel.id,
+          createdAt: Date.now(),
+          createdBy: newState.member.id,
+          members: {},
+          deleteTimer: setTimeout(async () => {
+            if (channel.members.size === 0) {
+              await channel.delete();
+              delete this.channels[selectedChannelName];
+            }
+          }, 30000),
+        };
+
+        await newState.member.voice.setChannel(channel);
+      }
+    }
+  }
+};
+
 exports.createPrivateChannel = async (interaction) => {
   const user = await userRepository.getUserByName(interaction.member.id);
   const newChannelName = `🔐 ${interaction.member.user.globalName}`;
