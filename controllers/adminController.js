@@ -26,7 +26,7 @@ exports.userList = async (msg) => {
   for (const user of users) {
     try {
       const discordUser = await client.users.fetch(user.userName);
-      const userInfo = `${user.userID} : ${discordUser.globalName}(${discordUser.username}, ${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
+      const userInfo = `${user.userID} : ${discordUser.displayName}(${discordUser.username}, ${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
       if (content.length + userInfo.length <= 4000) {
         content += userInfo;
       } else {
@@ -58,7 +58,7 @@ exports.userListByRole = async (msg) => {
   for (const user of users) {
     try {
       const discordUser = await client.users.fetch(user.userName);
-      const userInfo = `${user.userID} : ${discordUser.globalName}(${discordUser.username}, ${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
+      const userInfo = `${user.userID} : ${discordUser.displayName}(${discordUser.username}, ${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
       if (content.length + userInfo.length <= 4000) {
         content += userInfo;
       } else {
@@ -91,7 +91,7 @@ exports.userById = async (msg) => {
   if (user) {
     try {
       const discordUser = await client.users.fetch(user.userName);
-      content = `${user.userID} : ${discordUser.globalName}(${discordUser.username}, ${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
+      content = `${user.userID} : ${discordUser.displayName}(${discordUser.username}, ${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
     } catch (error) {
       logger.error(`Failed to fetch user ${user.userName}:`, error);
       content = `${user.userID} : (알 수 없는 사용자)(${user.Role.roleName}), chat: ${user.countChat}, chan: ${user.countCreateChannel}, col: ${user.countColor}\n`;
@@ -183,7 +183,7 @@ exports.getUserTimeList = async (msg) => {
       const minutes = Math.floor((user.connectionTime % 3600) / 60);
       const seconds = Math.floor(user.connectionTime % 60);
 
-      const userInfo = `${discordUser.globalName}(${discordUser.username}, ${user.Role.roleName}) : ${hours}h ${minutes}m ${seconds}s\n`;
+      const userInfo = `${discordUser.displayName}(${discordUser.username}, ${user.Role.roleName}) : ${hours}h ${minutes}m ${seconds}s\n`;
       if (content.length + userInfo.length <= 4000) {
         content += userInfo;
       } else {
@@ -221,7 +221,7 @@ exports.getUserTimeById = async (msg) => {
       const minutes = Math.floor((user.connectionTime % 3600) / 60);
       const seconds = Math.floor(user.connectionTime % 60);
 
-      content = `${discordUser.globalName}(${discordUser.username}, ${user.Role.roleName}) : ${hours}h ${minutes}m ${seconds}s\n`;
+      content = `${discordUser.displayName}(${discordUser.username}, ${user.Role.roleName}) : ${hours}h ${minutes}m ${seconds}s\n`;
     } catch (error) {
       logger.error(`Failed to fetch user ${user.userName}:`, error);
       content = `[알 수 없는 사용자]\n`;

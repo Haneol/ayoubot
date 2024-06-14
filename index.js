@@ -57,7 +57,7 @@ client.once(Events.ClientReady, async (readyClient) => {
   }
 
   cron.schedule(
-    //"*/10 8-10 * * *",
+    "*/10 8-10 * * *",
     () => {
       todayController.run(client);
       logger.cleanupOldLogFiles();
