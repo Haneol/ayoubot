@@ -46,7 +46,7 @@ exports.sendEmbededMsg = async (channel) => {
 
   const row = new ActionRowBuilder().addComponents(button);
   const row2 = new ActionRowBuilder().addComponents(button2);
-
+  const timestamp = Math.floor(Date.now() / 1000);
   //임베딩 추가
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
@@ -57,7 +57,7 @@ exports.sendEmbededMsg = async (channel) => {
     })
     .setDescription(
       `
-        아유봇 ${ayouVersion}
+        아유봇 ${ayouVersion} <t:${timestamp}:R>
         아유서버에 여러 편의 기능을 제공해줍니다.
 
         믫 또는 !!로 명령어를 실행할 수 있습니다. e.g. 믫 채널, !!채널
