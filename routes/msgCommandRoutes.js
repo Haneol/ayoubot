@@ -1,13 +1,21 @@
 const CommandRoutes = require("./commandRoutes");
 const { authenticateUser } = require("../middlewares/userMiddleware");
 const userRepository = require("../repositories/userRepository");
+const { emojiToggle, bigEmoji } = require("../controllers/emojiController");
 
 class MsgCommandRoutes extends CommandRoutes {
   // Implementation
   async routes(msg) {
     if (msg.author.bot) return;
 
-    if (msg.content.startsWith("//")) {
+    const emojiRegex = /^<:(\w+):(\d+)>$/;
+    const emojiMatch = emojiRegex.exec(msg.content);
+
+    if (emojiMatch && msg.content.trim() === emojiMatch[0]) {
+      if (emojiToggle[msg.author.id]) {
+        await bigEmoji(msg, emojiMatch[2]);
+      }
+    } else if (msg.content.startsWith("//")) {
       // userMiddleware 사용
       await authenticateUser(msg, async () => {
         const user = await userRepository.getUserById(msg.ayouUser);
@@ -145,6 +153,14 @@ class MsgCommandRoutes extends CommandRoutes {
           cmd == "아유야"
         ) {
           this._findRoutes(msg, "check_chat_with_ayou");
+        } else if (
+          cmd == "이모지" ||
+          cmd == "emoji" ||
+          cmd == "확대" ||
+          cmd == "이모지확대" ||
+          cmd == "돋보기"
+        ) {
+          this._findRoutes(msg, "expand_emoji");
         }
       });
     } else if (msg.content.startsWith("아유야 ")) {

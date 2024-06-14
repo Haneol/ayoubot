@@ -3,6 +3,7 @@ const gameController = require("../controllers/gameController");
 const channelController = require("../controllers/channelController");
 const chatController = require("../controllers/chatController");
 const helpController = require("../controllers/helpController");
+const emojiController = require("../controllers/emojiController");
 const CommandRoutes = require("./commandRoutes");
 const {
   authenticateUserWithInteraction,
@@ -43,6 +44,9 @@ class SlashCommandRoutes extends CommandRoutes {
           `유저 ${interaction.member.user.username} : 게임 역할 지우기`
         );
         await gameController.deleteGame(interaction);
+        logger.info(`유저 ${interaction.member.user.username} : 돋보기 토글`);
+      } else if (commandName === "돋보기") {
+        await emojiController.runWithInteraction(interaction);
       } else if (commandName === "대화") {
         logger.info(
           `유저 ${interaction.member.user.username} : 아유봇과 대화 횟수`

@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 
 // 아유봇 버전 명시
-const ayouVersion = "v5.1.2";
+const ayouVersion = "v5.2.0";
 
 exports.sendEmbededMsg = async (channel) => {
   // 버튼 추가
@@ -52,7 +52,7 @@ exports.sendEmbededMsg = async (channel) => {
     .setColor(0xf14966)
     .setTitle("❓ 도움말")
     .setFooter({
-      text: "그럴수 있지",
+      text: "그럴 수 있지",
       iconURL: "https://imgur.com/ARl3roS.png",
     })
     .setDescription(
@@ -98,7 +98,7 @@ exports.sendHelpEmbededMsg = async (msg) => {
     .setColor(0xf14966)
     .setTitle("❓ 도움말")
     .setFooter({
-      text: "그럴수 있지",
+      text: "그럴 수 있지",
       iconURL: "https://imgur.com/ARl3roS.png",
     })
     .setDescription(

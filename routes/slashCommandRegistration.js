@@ -38,6 +38,9 @@ exports.run = async (client) => {
       new SlashCommandBuilder()
         .setName("대화")
         .setDescription("아유봇과의 대화 횟수를 확인합니다."),
+      new SlashCommandBuilder()
+        .setName("돋보기")
+        .setDescription("커스텀 이모지 확대기능을 토글(on/off)합니다."),
     ];
 
     // 컨텍스트 메뉴 명령어 등록
