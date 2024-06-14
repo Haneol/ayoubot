@@ -18,6 +18,9 @@ exports.run = async (client) => {
         .setName("채널")
         .setDescription("공개 음성 채널을 생성합니다."),
       new SlashCommandBuilder()
+        .setName("채널삭제")
+        .setDescription("공개/비밀 음성 채널을 삭제합니다."),
+      new SlashCommandBuilder()
         .setName("비밀채널")
         .setDescription("비밀 음성 채널을 생성합니다."),
       new SlashCommandBuilder()

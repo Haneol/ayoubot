@@ -95,6 +95,13 @@ class MsgCommandRoutes extends CommandRoutes {
         ) {
           this._findRoutes(msg, "create_channel");
         } else if (
+          cmd == "채널삭제" ||
+          cmd == "음성채널삭제" ||
+          cmd == "방삭제" ||
+          cmd == "보이스채널삭제"
+        ) {
+          this._findRoutes(msg, "delete_channel");
+        } else if (
           cmd == "color" ||
           cmd == "색변경" ||
           cmd == "색" ||

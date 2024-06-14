@@ -88,6 +88,11 @@ class CommandRoutes {
         channelController.run(msg);
         break;
 
+      case "delete_channel":
+        logger.info(`유저 ${msg.author.username} : 채널 삭제`);
+        channelController.deleteChannel(msg);
+        break;
+
       case "get_color":
         logger.info(`유저 ${msg.author.username} : 색 확인`);
         colorController.showCurrentColor(msg);

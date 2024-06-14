@@ -360,3 +360,21 @@ async function managePrivateChannel(interaction, channelName, channelId) {
     invitedUserString
   );
 }
+
+exports.deleteChannel = async (interaction) => {
+  const channelName = isChannelCreatedBy(interaction, this.channels);
+  const channel = interaction.guild.channels.cache.find(
+    (channel) => channel.name === channelName
+  );
+  if (this.channels[channelName]) {
+    if (channel) await channel.delete();
+    clearTimeout(this.channels[channelName].deleteTimer);
+    delete this.channels[channelName].deleteTimer;
+    delete this.channels[channelName];
+    logger.info(channelName + " 삭제되었습니다.");
+
+    await channelView.sendChannelDeleteEmbededMsg(interaction, channelName);
+  } else {
+    await channelView.sendChannelDeleteFailedEmbededMsg(interaction);
+  }
+};

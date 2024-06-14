@@ -298,3 +298,36 @@ function infoMsg(user) {
       break;
   }
 }
+
+exports.sendChannelDeleteEmbededMsg = async (interaction, channelName) => {
+  // 임베드 메시지 생성
+  const embed = new EmbedBuilder()
+    .setColor(0xf14966)
+    .setTitle(`✅ 채널 삭제 성공`)
+    .setFooter({
+      text: "그럴 수 있지",
+      iconURL: "https://imgur.com/ARl3roS.png",
+    })
+    .setDescription(`${channelName} 채널이 삭제되었습니다.`);
+
+  await interaction.reply({
+    embeds: [embed],
+  });
+};
+
+exports.sendChannelDeleteFailedEmbededMsg = async (interaction) => {
+  // 임베드 메시지 생성
+  const embed = new EmbedBuilder()
+    .setColor(0xf14966)
+    .setTitle(`🚫 채널 삭제 실패`)
+    .setFooter({
+      text: "그럴 수 있지",
+      iconURL: "https://imgur.com/ARl3roS.png",
+    })
+    .setDescription(`채널이 존재하지 않아요.`);
+
+  await interaction.reply({
+    embeds: [embed],
+    ephemeral: true,
+  });
+};

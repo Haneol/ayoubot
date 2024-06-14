@@ -22,6 +22,9 @@ class SlashCommandRoutes extends CommandRoutes {
       } else if (commandName === "채널") {
         logger.info(`유저 ${interaction.member.user.username} : 채널 생성`);
         await channelController.createChannelRequest(interaction);
+      } else if (commandName === "채널삭제") {
+        logger.info(`유저 ${interaction.member.user.username} : 채널 삭제`);
+        await channelController.deleteChannel(interaction);
       } else if (commandName === "비밀채널") {
         logger.info(`유저 ${interaction.member.user.username} : 비밀채널 생성`);
         await channelController.createPrivateChannelRequest(interaction);
