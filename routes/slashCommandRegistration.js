@@ -18,6 +18,9 @@ exports.run = async (client) => {
         .setName("채널")
         .setDescription("공개 음성 채널을 생성합니다."),
       new SlashCommandBuilder()
+        .setName("채널삭제")
+        .setDescription("공개/비밀 음성 채널을 삭제합니다."),
+      new SlashCommandBuilder()
         .setName("비밀채널")
         .setDescription("비밀 음성 채널을 생성합니다."),
       new SlashCommandBuilder()
@@ -38,6 +41,9 @@ exports.run = async (client) => {
       new SlashCommandBuilder()
         .setName("대화")
         .setDescription("아유봇과의 대화 횟수를 확인합니다."),
+      new SlashCommandBuilder()
+        .setName("돋보기")
+        .setDescription("커스텀 이모지 확대기능을 토글(on/off)합니다."),
     ];
 
     // 컨텍스트 메뉴 명령어 등록

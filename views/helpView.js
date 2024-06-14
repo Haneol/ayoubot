@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 
 // 아유봇 버전 명시
-const ayouVersion = "v5.1.2";
+const ayouVersion = "v5.2.0";
 
 exports.sendEmbededMsg = async (channel) => {
   // 버튼 추가
@@ -46,18 +46,18 @@ exports.sendEmbededMsg = async (channel) => {
 
   const row = new ActionRowBuilder().addComponents(button);
   const row2 = new ActionRowBuilder().addComponents(button2);
-
+  const timestamp = Math.floor(Date.now() / 1000);
   //임베딩 추가
   const embed = new EmbedBuilder()
     .setColor(0xf14966)
     .setTitle("❓ 도움말")
     .setFooter({
-      text: "그럴수 있지",
+      text: "그럴 수 있지",
       iconURL: "https://imgur.com/ARl3roS.png",
     })
     .setDescription(
       `
-        아유봇 ${ayouVersion}
+        아유봇 ${ayouVersion} <t:${timestamp}:R>
         아유서버에 여러 편의 기능을 제공해줍니다.
 
         믫 또는 !!로 명령어를 실행할 수 있습니다. e.g. 믫 채널, !!채널
@@ -98,7 +98,7 @@ exports.sendHelpEmbededMsg = async (msg) => {
     .setColor(0xf14966)
     .setTitle("❓ 도움말")
     .setFooter({
-      text: "그럴수 있지",
+      text: "그럴 수 있지",
       iconURL: "https://imgur.com/ARl3roS.png",
     })
     .setDescription(

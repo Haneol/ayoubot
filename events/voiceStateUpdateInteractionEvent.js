@@ -1,8 +1,12 @@
 const voiceTime = {};
 
-const { channels } = require("../controllers/channelController");
+const {
+  channels,
+  createChannelWithNoName,
+} = require("../controllers/channelController");
 const userRepository = require("../repositories/userRepository");
 const logger = require("../utils/logger");
+const { voiceCreateChannelId } = require("../channelId.json");
 
 class VoiceStateUpdateInteractionEvent {
   constructor() {
@@ -17,7 +21,9 @@ class VoiceStateUpdateInteractionEvent {
     const oldChannel = oldState.channel;
     const newChannel = newState.channel;
 
-    if (oldChannel && newChannel && oldChannel.id !== newChannel.id) {
+    if (newChannel && newChannel.id === voiceCreateChannelId) {
+      await createChannelWithNoName(newState);
+    } else if (oldChannel && newChannel && oldChannel.id !== newChannel.id) {
       // 사용자가 채널 간에 이동했을 때
       if (voiceTime[member.id]) {
         const duration = Date.now() - voiceTime[member.id];

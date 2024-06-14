@@ -4,6 +4,7 @@ const gameController = require("../controllers/gameController");
 const channelController = require("../controllers/channelController");
 const chatController = require("../controllers/chatController");
 const helpController = require("../controllers/helpController");
+const emojiController = require("../controllers/emojiController");
 const logger = require("../utils/logger");
 
 // Abstract Class
@@ -87,6 +88,11 @@ class CommandRoutes {
         channelController.run(msg);
         break;
 
+      case "delete_channel":
+        logger.info(`유저 ${msg.author.username} : 채널 삭제`);
+        channelController.deleteChannel(msg);
+        break;
+
       case "get_color":
         logger.info(`유저 ${msg.author.username} : 색 확인`);
         colorController.showCurrentColor(msg);
@@ -105,6 +111,11 @@ class CommandRoutes {
       case "check_chat_with_ayou":
         logger.info(`유저 ${msg.author.username} : 아유봇과 채팅 횟수`);
         chatController.getUsersCount(msg);
+        break;
+
+      case "expand_emoji":
+        logger.info(`유저 ${msg.author.username} : 이모지 확대 토글`);
+        emojiController.run(msg);
         break;
 
       case "chat_with_ayou":
