@@ -6,7 +6,7 @@ const {
 } = require("discord.js");
 
 // 아유봇 버전 명시
-const ayouVersion = "v5.2.0";
+const ayouVersion = "v5.2.1";
 
 exports.sendEmbededMsg = async (channel) => {
   // 버튼 추가
@@ -72,12 +72,20 @@ exports.sendEmbededMsg = async (channel) => {
         value: "공개 또는 비밀 음성 채널을 생성할 수 있습니다.",
       },
       {
+        name: "**믫 채널삭제**",
+        value: "공개 또는 비밀 음성 채널을 삭제할 수 있습니다.",
+      },
+      {
         name: "**믫 색**",
         value: "닉네임 색을 변경할 수 있습니다.",
       },
       {
         name: "**믫 게임**",
         value: "게임 역할을 설정하고, 게임 채널을 볼 수 있습니다.",
+      },
+      {
+        name: "**믫 돋보기**",
+        value: "이모지 확대 기능을 토글(on/off)합니다.",
       },
       {
         name: "**믫 대화**",
@@ -116,12 +124,20 @@ exports.sendHelpEmbededMsg = async (msg) => {
         value: "공개 또는 비밀 음성 채널을 생성할 수 있습니다.",
       },
       {
+        name: "**믫 채널삭제**",
+        value: "공개 또는 비밀 음성 채널을 삭제할 수 있습니다.",
+      },
+      {
         name: "**믫 색**",
         value: "닉네임 색을 변경할 수 있습니다.",
       },
       {
         name: "**믫 게임**",
         value: "게임 역할을 설정하고, 게임 채널을 볼 수 있습니다.",
+      },
+      {
+        name: "**믫 돋보기**",
+        value: "이모지 확대 기능을 토글(on/off)합니다.",
       },
       {
         name: "**믫 대화**",
